@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #18352f;
+  background: #f8faf7;
+}
+
+.site-header,
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 8%;
+  background: #ffffff;
+}
+
+.logo {
+  font-weight: bold;
+  color: #18352f;
+  text-decoration: none;
+}
+
+nav a,
+.site-footer a {
+  margin-left: 20px;
+  color: #18352f;
+  text-decoration: none;
+}
+
+.hero {
+  padding: 90px 8%;
+  background: #eef5ee;
+}
+
+.hero h1 {
+  max-width: 680px;
+  font-size: 48px;
+  line-height: 1.1;
+}
+
+.hero p {
+  max-width: 560px;
+  font-size: 18px;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 18px;
+  background: #b83232;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.section {
+  padding: 56px 8%;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.menu-card {
+  background: #ffffff;
+  border: 1px solid #dce7df;
+  border-radius: 6px;
+  padding: 24px;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #b83232;
+}
+
+@media (max-width: 900px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
