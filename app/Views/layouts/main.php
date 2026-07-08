@@ -26,6 +26,12 @@
             <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
           <?php if (isset($_SESSION['user'])): ?>
 
+            <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="?page=admin-dashboard">Admin</a>
+                </li>
+            <?php endif; ?>
+
             <?php if (in_array($_SESSION['user']['role'], ['employee', 'admin'], true)): ?>
               <li class="nav-item">
                   <a class="nav-link" href="?page=employee-orders">Commandes</a>

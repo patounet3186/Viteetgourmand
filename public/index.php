@@ -20,6 +20,7 @@ $routes = [
     'logout' => __DIR__ . '/../app/Views/auth/logout.php',
     'order-create' => __DIR__ . '/../app/Views/orders/create.php',
     'employee-orders' => __DIR__ . '/../app/Views/employee/orders.php',
+    'admin-dashboard' => __DIR__ . '/../app/Views/admin/dashboard.php',
 ];
 
 $view = $routes[$page] ?? $routes['home'];
@@ -32,6 +33,7 @@ $title =  match ($page) {
   'account' => 'Mon espace',
   'logout' => 'Deconnexion',
   'employee-orders' => 'Gestion des commandes',
+  'admin-dashboard' => 'Administration',
   default => 'Accueil',
 };
 
