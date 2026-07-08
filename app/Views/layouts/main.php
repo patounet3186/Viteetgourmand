@@ -24,7 +24,21 @@
             <li class="nav-item"><a class="nav-link" href="?page=home">Accueil</a></li>
             <li class="nav-item"><a class="nav-link" href="?page=menus">Menus</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Connexion</a></li>
+          <?php if (isset($_SESSION['user'])): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="?page=account">Mon espace</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="?page=logout">Deconnexion</a>
+            </li>
+          <?php else: ?>
+            <li class="nav-item">
+                <a class="nav-link" href="?page=register">Inscription</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="?page=login">Connexion</a>
+            </li>
+          <?php endif; ?>
           </ul>
         </div>
       </div>

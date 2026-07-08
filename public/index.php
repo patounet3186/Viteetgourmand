@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 session_start();
+ob_start();
 
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -13,12 +14,22 @@ $routes = [
     'home' => __DIR__ .'/../app/Views/pages/home.php',
     'menus' => __DIR__ . '/../app/Views/menus/index.php',
     'menu-show' => __DIR__ .'/../app/Views/menus/show.php',
+    'register' => __DIR__ . '/../app/Views/auth/register.php',
+    'login' => __DIR__ . '/../app/Views/auth/login.php',
+    'account' => __DIR__ . '/../app/Views/auth/account.php',
+    'logout' => __DIR__ . '/../app/Views/auth/logout.php',
+    'order-create' => __DIR__ . '/../app/Views/orders/create.php',
 ];
 
 $view = $routes[$page] ?? $routes['home'];
 $title =  match ($page) {
   'menus' => 'Nos menu',
   'menu-show' => 'Detail de menu',
+  'order-create' => 'Commander',
+  'register' => 'Inscription',
+  'login' => 'Connexion',
+  'account' => 'Mon espace',
+  'logout' => 'Deconnexion',
   default => 'Accueil',
 };
 

@@ -57,7 +57,8 @@ $menus = $stmt->fetchAll();
   <div class="row g-4 mt-4">
     <?php foreach ($menus as $menu): ?>
     <div class="col-md-4">
-      <article class="card h-100 menu-card" data-price="<?= (float) $menu['base_price'] ?>" data-theme="<?= htmlspecialchars($menu['theme']) ?>" data-diet="<?= htmlspecialchars($menu['diet']) ?>" data-people="<?= (int) $menu['min_people'] ?>">ticle <div class="card-body">
+      <article class="card h-100 menu-card" data-price="<?= (float) $menu['base_price'] ?>" data-theme="<?= htmlspecialchars($menu['theme']) ?>" data-diet="<?= htmlspecialchars($menu['diet']) ?>" data-people="<?= (int) $menu['min_people'] ?>">
+        <div class="card-body">
           <h2 class="h4 card-title"><?= htmlspecialchars($menu['title']) ?></h2>
           <p class="card-text"><?= htmlspecialchars($menu['description']) ?></p>
 

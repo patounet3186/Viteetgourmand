@@ -46,7 +46,7 @@ if (!$menu) {
         <?= htmlspecialchars($menu['conditions_text']) ?>
       </div>
 
-      <a href="#" class="btn">Commander ce menu</a>
+      <a href="?page=order-create&menu_id=<?= (int) $menu['id'] ?>" class="btn">Commander ce menu</a>
     </div>
   </div>
 </section>
