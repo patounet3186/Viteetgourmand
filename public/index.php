@@ -19,17 +19,19 @@ $routes = [
     'account' => __DIR__ . '/../app/Views/auth/account.php',
     'logout' => __DIR__ . '/../app/Views/auth/logout.php',
     'order-create' => __DIR__ . '/../app/Views/orders/create.php',
+    'employee-orders' => __DIR__ . '/../app/Views/employee/orders.php',
 ];
 
 $view = $routes[$page] ?? $routes['home'];
 $title =  match ($page) {
-  'menus' => 'Nos menu',
-  'menu-show' => 'Detail de menu',
+  'menus' => 'Nos menus',
+  'menu-show' => 'Detail du menu',
   'order-create' => 'Commander',
   'register' => 'Inscription',
   'login' => 'Connexion',
   'account' => 'Mon espace',
   'logout' => 'Deconnexion',
+  'employee-orders' => 'Gestion des commandes',
   default => 'Accueil',
 };
 

@@ -82,3 +82,14 @@ nav a,
     grid-template-columns: 1fr;
   }
 }
+
+/* javascript */
+
+.js-auto-hide {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.js-auto-hide.fade-out {
+  opacity: 0;
+  transform: translateY(-6px);
+}
