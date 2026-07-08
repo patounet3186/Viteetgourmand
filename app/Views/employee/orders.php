@@ -17,13 +17,13 @@ $pdo = getDatabase();
 
 $statuses = [
     'nouvelle' => 'Nouvelle',
-    'accepte' => 'Acceptee',
-    'en_preparation' => 'En preparation',
+    'accepte' => 'Acceptée',
+    'en_preparation' => 'En préparation',
     'en_livraison' => 'En livraison',
-    'livre' => 'Livre',
-    'attente_materiel' => 'Attente materiel',
-    'terminee' => 'Terminee',
-    'annulee' => 'Annulee',
+    'livre' => 'Livrée',
+    'attente_materiel' => 'Attente matériel',
+    'terminee' => 'Terminée',
+    'annulee' => 'Annulée',
 ];
 
 $selectedStatus = $_GET['status'] ?? '';
@@ -89,7 +89,7 @@ $orders = $stmt->fetchAll();
     <h1>Gestion des commandes</h1>
 
     <?php if (isset($_GET['updated'])): ?>
-        <div class="alert alert-success js-auto-hide">Statut mis a jour.</div>
+        <div class="alert alert-success js-auto-hide">Commande mise à jour.</div>
     <?php endif; ?>
 
     <form method="get" class="card p-4 mb-4">

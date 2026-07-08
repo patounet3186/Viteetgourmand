@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <section class="section">
-    <h1>Creation de compte</h1>
+    <h1>Création de compte</h1>
 
     <?php foreach ($errors as $error): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="post" class="card p-4 mt-4">
         <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label">Prenom</label>
+                <label class="form-label">Prénom</label>
                 <input type="text" name="first_name" class="form-control" required>
             </div>
 
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Telephone</label>
+                <label class="form-label">Téléphone</label>
                 <input type="text" name="phone" class="form-control">
             </div>
 
@@ -115,6 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <button type="submit" class="btn mt-4">Creer mon compte</button>
+        <button type="submit" class="btn mt-4">Créer mon compte</button>
     </form>
 </section>

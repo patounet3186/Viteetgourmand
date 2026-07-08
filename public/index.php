@@ -21,6 +21,7 @@ $routes = [
     'order-create' => __DIR__ . '/../app/Views/orders/create.php',
     'employee-orders' => __DIR__ . '/../app/Views/employee/orders.php',
     'admin-dashboard' => __DIR__ . '/../app/Views/admin/dashboard.php',
+    'review-create' => __DIR__ . '/../app/Views/reviews/create.php',
 ];
 
 $view = $routes[$page] ?? $routes['home'];
@@ -31,9 +32,10 @@ $title =  match ($page) {
   'register' => 'Inscription',
   'login' => 'Connexion',
   'account' => 'Mon espace',
-  'logout' => 'Deconnexion',
+  'logout' => 'Déconnexion',
   'employee-orders' => 'Gestion des commandes',
   'admin-dashboard' => 'Administration',
+  'review-create' => 'Déposer un avis',
   default => 'Accueil',
 };
 

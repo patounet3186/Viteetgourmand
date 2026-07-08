@@ -42,7 +42,7 @@
                 <a class="nav-link" href="?page=account">Mon espace</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="?page=logout">Deconnexion</a>
+                <a class="nav-link" href="?page=logout">Déconnexion</a>
             </li>
 
           <?php else: ?>

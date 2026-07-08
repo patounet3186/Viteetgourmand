@@ -31,8 +31,8 @@ if (!$menu) {
       <p><?= htmlspecialchars($menu['description']) ?></p>
 
       <ul>
-        <li>Theme : <?= htmlspecialchars($menu['theme']) ?></li>
-        <li>Regime : <?= htmlspecialchars($menu['diet']) ?></li>
+        <li>Thème : <?= htmlspecialchars($menu['thème']) ?></li>
+        <li>Régime : <?= htmlspecialchars($menu['diet']) ?></li>
         <li>Minimum : <?= (int) $menu['min_people'] ?> personnes</li>
         <li>Stock disponible : <?= (int) $menu['stock'] ?></li>
       </ul>

@@ -16,7 +16,7 @@ $menus = $stmt->fetchAll();
 
 <section class="section">
   <h1>Nos menus</h1>
-  <p>Decouvrez les menus proposes par Vite & Gourmand.</p>
+  <p>Découvrez les menus proposés par Vite & Gourmand.</p>
   <div class="card mt-4">
     <div class="card-body">
       <h2 class="h5">Filtrer les menus</h2>
@@ -28,22 +28,22 @@ $menus = $stmt->fetchAll();
         </div>
 
         <div class="col-md-3">
-          <label for="filterTheme" class="form-label">Theme</label>
+          <label for="filterTheme" class="form-label">Thème</label>
           <select id="filterTheme" class="form-select">
             <option value="">Tous</option>
-            <option value="Noel">Noel</option>
-            <option value="Paques">Paques</option>
+            <option value="Noel">Noël</option>
+            <option value="Paques">Pâques</option>
             <option value="Classique">Classique</option>
           </select>
         </div>
 
         <div class="col-md-3">
-          <label for="filterDiet" class="form-label">Regime</label>
+          <label for="filterDiet" class="form-label">Régime</label>
           <select id="filterDiet" class="form-select">
             <option value="">Tous</option>
             <option value="classique">Classique</option>
-            <option value="vegetarien">Vegetarien</option>
-            <option value="vegan">Vegan</option>
+            <option value="vegetarien">Végétarien</option>
+            <option value="vegan">Végan</option>
           </select>
         </div>
 
@@ -62,8 +62,8 @@ $menus = $stmt->fetchAll();
           <h2 class="h4 card-title"><?= htmlspecialchars($menu['title']) ?></h2>
           <p class="card-text"><?= htmlspecialchars($menu['description']) ?></p>
 
-          <p>Theme : <?= htmlspecialchars($menu['theme']) ?></p>
-          <p>Regime : <?= htmlspecialchars($menu['diet']) ?></p>
+          <p>Thème : <?= htmlspecialchars($menu['thème']) ?></p>
+          <p>Régime : <?= htmlspecialchars($menu['diet']) ?></p>
           <p>Minimum : <?= (int) $menu['min_people'] ?> personnes</p>
           <p>Stock : <?= (int) $menu['stock'] ?></p>
 
