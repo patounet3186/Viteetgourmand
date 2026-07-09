@@ -29,7 +29,10 @@ nav a,
 
 .hero {
   padding: 90px 8%;
-  background: #eef5ee;
+  background:
+    linear-gradient(rgba(24, 53, 47, 0.72), rgba(24, 53, 47, 0.62)),
+    url("/ECF-2026/public/images/hero-restaurant.webp") center/cover;
+  color: #ffffff;
 }
 
 .hero h1 {
@@ -68,7 +71,42 @@ nav a,
   background: #ffffff;
   border: 1px solid #dce7df;
   border-radius: 6px;
-  padding: 24px;
+  overflow: hidden;
+}
+
+.menu-card-body-image,
+.menu-detail-body-image {
+  background-image: linear-gradient(rgba(24, 53, 47, 0.72), rgba(24, 53, 47, 0.62)), var(--menu-image);
+  background-position: center;
+  background-size: cover;
+  color: #ffffff;
+}
+
+.menu-card-body-image {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 430px;
+}
+
+.menu-detail-body-image {
+  min-height: 520px;
+}
+
+.menu-card-body-image .price,
+.menu-detail-body-image .price {
+  color: #ffffff;
+}
+
+.menu-card-body-image .btn,
+.menu-detail-body-image .btn {
+  align-self: flex-start;
+}
+
+.menu-detail-body-image .alert {
+  background: rgba(255, 255, 255, 0.9);
+  border: 0;
+  color: #18352f;
 }
 
 .price {

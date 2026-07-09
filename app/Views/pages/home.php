@@ -12,7 +12,7 @@
 <section class="section">
   <h2>Bienvenue chez Vite & Gourmand</h2>
   <p>
-    Notre équipe propose des menus adaptes aux repas de famille,
+    Notre équipe propose des menus adaptés aux repas de famille,
     événements professionnels et célébrations.
   </p>
 </section>

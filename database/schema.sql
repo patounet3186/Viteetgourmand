@@ -77,13 +77,13 @@ CREATE TABLE IF NOT EXISTS reviews (
 );
 
 INSERT INTO menus (title, description, theme, diet, min_people, base_price, conditions_text, stock, image_url) VALUES
-('Menu Noel', 'Menu festif avec entree, plat chaud et dessert gourmand.', 'Noel', 'classique', 6, 180.00, 'Commande au moins 10 jours avant la prestation.', 5, 'public/images/menu-noel.jpg'),
-('Menu Paques', 'Menu familial autour de produits de saison.', 'Paques', 'classique', 4, 120.00, 'A conserver au frais avant degustation.', 8, 'public/images/menu-paques.jpg'),
-('Menu Classique', 'Menu simple et efficace pour repas de groupe.', 'Classique', 'vegetarien', 2, 45.00, 'Commande au moins 48h avant la prestation.', 12, 'public/images/menu-classique.jpg');
+('Menu Noel', 'Menu festif avec entrée, plat chaud et dessert gourmand.', 'Noël', 'classique', 6, 180.00, 'Commandé au moins 10 jours avant la prestation.', 5, 'public/images/menu-noel.webp'),
+('Menu Paques', 'Menu familial autour de produits de saison.', 'Pâques', 'classique', 4, 120.00, 'A conserver au frais avant dégustation.', 8, 'public/images/menu-paques.webp'),
+('Menu Classique', 'Menu simple et efficace pour repas de groupe.', 'Classique', 'végétarien', 2, 45.00, 'Commandé au moins 48h avant la prestation.', 12, 'public/images/menu-classique.webp');
 
 INSERT INTO dishes (name, category, description, allergens) VALUES
-('Veloute de saison', 'entree', 'Soupe maison selon les legumes disponibles.', 'lait'),
-('Volaille rotie', 'plat', 'Plat chaud accompagne de legumes.', 'aucun'),
+('Veloute de saison', 'entrée', 'Soupe maison selon les légumes disponibles.', 'lait'),
+('Volaille rôtie', 'plat', 'Plat chaud accompagne de légumes.', 'aucun'),
 ('Tarte gourmande', 'dessert', 'Dessert maison aux fruits.', 'gluten, oeufs');
 
 INSERT INTO menu_dishes (menu_id, dish_id) VALUES

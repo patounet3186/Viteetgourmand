@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../../config/database.php';
 $pdo = getDatabase();
 
 $stmt = $pdo->query("
-    SELECT id, title, description, theme, diet, min_people, base_price, stock
+    SELECT id, title, description, theme, diet, min_people, base_price, stock, image_url
     FROM menus
     WHERE is_active = 1
     ORDER BY created_at DESC
@@ -56,13 +56,20 @@ $menus = $stmt->fetchAll();
   </div>
   <div class="row g-4 mt-4">
     <?php foreach ($menus as $menu): ?>
+    <?php
+      $imageUrl = $menu['image_url'] ?? '';
+      if ($imageUrl !== '' && !str_starts_with($imageUrl, 'http')) {
+          $imageUrl = '/ECF-2026/' . ltrim($imageUrl, '/');
+      }
+      $imageStyle = $imageUrl !== '' ? "--menu-image: url('" . htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') . "');" : '';
+    ?>
     <div class="col-md-4">
       <article class="card h-100 menu-card" data-price="<?= (float) $menu['base_price'] ?>" data-theme="<?= htmlspecialchars($menu['theme']) ?>" data-diet="<?= htmlspecialchars($menu['diet']) ?>" data-people="<?= (int) $menu['min_people'] ?>">
-        <div class="card-body">
+        <div class="card-body <?= $imageUrl !== '' ? 'menu-card-body-image' : '' ?>" <?= $imageStyle !== '' ? 'style="' . $imageStyle . '"' : '' ?>>
           <h2 class="h4 card-title"><?= htmlspecialchars($menu['title']) ?></h2>
           <p class="card-text"><?= htmlspecialchars($menu['description']) ?></p>
 
-          <p>Thème : <?= htmlspecialchars($menu['thème']) ?></p>
+          <p>Thème : <?= htmlspecialchars($menu['theme']) ?></p>
           <p>Régime : <?= htmlspecialchars($menu['diet']) ?></p>
           <p>Minimum : <?= (int) $menu['min_people'] ?> personnes</p>
           <p>Stock : <?= (int) $menu['stock'] ?></p>
@@ -71,7 +78,7 @@ $menus = $stmt->fetchAll();
             <?= number_format((float) $menu['base_price'], 2, ',', ' ') ?> €
           </p>
 
-          <a class="btn" href="?page=menu-show&id=<?= (int) $menu['id'] ?>">Voir le detail</a>
+          <a class="btn" href="?page=menu-show&id=<?= (int) $menu['id'] ?>">Voir le détail</a>
         </div>
       </article>
     </div>

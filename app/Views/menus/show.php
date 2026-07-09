@@ -19,19 +19,26 @@ if (!$menu) {
     echo '<section class="section"><h1>Menu introuvable</h1></section>';
     return;
 }
+
+$imageUrl = $menu['image_url'] ?? '';
+if ($imageUrl !== '' && !str_starts_with($imageUrl, 'http')) {
+    $imageUrl = '/ECF-2026/' . ltrim($imageUrl, '/');
+}
+
+$imageStyle = $imageUrl !== '' ? "--menu-image: url('" . htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') . "');" : '';
 ?>
 
 <section class="section">
   <a href="?page=menus" class="btn btn-outline-secondary mb-4">Retour aux menus</a>
 
   <div class="card">
-    <div class="card-body">
+    <div class="card-body <?= $imageUrl !== '' ? 'menu-detail-body-image' : '' ?>" <?= $imageStyle !== '' ? 'style="' . $imageStyle . '"' : '' ?>>
       <h1><?= htmlspecialchars($menu['title']) ?></h1>
 
       <p><?= htmlspecialchars($menu['description']) ?></p>
 
       <ul>
-        <li>Thème : <?= htmlspecialchars($menu['thème']) ?></li>
+        <li>Thème : <?= htmlspecialchars($menu['theme']) ?></li>
         <li>Régime : <?= htmlspecialchars($menu['diet']) ?></li>
         <li>Minimum : <?= (int) $menu['min_people'] ?> personnes</li>
         <li>Stock disponible : <?= (int) $menu['stock'] ?></li>
