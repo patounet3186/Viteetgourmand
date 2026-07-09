@@ -1,65 +1,91 @@
 # Documentation de gestion de projet
 
-## Methode retenue
+## Méthode retenue
 
-La gestion de projet est organisee sous forme de backlog simple avec priorisation des fonctionnalites.
+La gestion de projet est organisée sous forme de backlog simple avec priorisation des fonctionnalités.
 
-Les fonctionnalites sont developpees par branches Git afin de respecter les bonnes pratiques demandees dans le sujet.
+Les fonctionnalités sont développées par branches Git afin de respecter les bonnes pratiques demandées dans le sujet.
 
 ## Branches Git
 
 - `main` : version stable.
-- `develop` : version de developpement.
-- `feature/*` : branche par fonctionnalite.
+- `develop` : version de développement.
+- `feature/*` : branche par fonctionnalité.
 
 Exemples :
 
 ```bash
 feature/auth
 feature/orders
-feature/admin
+feature/employee-space
 feature/reviews
+```
+
+La branche de travail actuelle est :
+
+```text
+feature/employee-space
 ```
 
 ## Backlog prioritaire
 
-| Priorite | Fonctionnalite | Statut |
+| Priorité | Fonctionnalité | Statut |
 | --- | --- | --- |
 | 1 | Structure PHP et routing simple | Fait |
 | 2 | Liste des menus | Fait |
-| 3 | Detail menu | Fait |
+| 3 | Détail menu | Fait |
 | 4 | Filtres dynamiques JS | Fait |
 | 5 | Inscription | Fait |
-| 6 | Connexion / deconnexion | Fait |
-| 7 | Commande menu | En cours |
-| 8 | Espace utilisateur | En cours |
-| 9 | Espace employe | A faire |
-| 10 | Espace administrateur | A faire |
-| 11 | Statistiques NoSQL | A faire |
-| 12 | Deploiement | A faire |
+| 6 | Connexion / déconnexion | Fait |
+| 7 | Commande menu | Fait |
+| 8 | Espace utilisateur | Fait |
+| 9 | Espace employé | Fait |
+| 10 | Espace administrateur | Fait |
+| 11 | Avis clients NoSQL avec MongoDB Atlas | Fait |
+| 12 | Validation/refus des avis | Fait |
+| 13 | Documentation finale | En cours |
+| 14 | Déploiement | À faire |
 
-## Regles de validation
+## Règles de validation
 
 Avant chaque merge :
 
-1. Tester la fonctionnalite dans le navigateur.
-2. Verifier la syntaxe PHP :
+1. Tester la fonctionnalité dans le navigateur.
+2. Vérifier la syntaxe PHP :
 
 ```bash
 C:/xampp/php/php.exe -l chemin/du/fichier.php
 ```
 
-3. Verifier qu'aucun secret n'est suivi par Git :
+3. Vérifier qu'aucun secret n'est suivi par Git :
 
 ```bash
 git status --ignored
 ```
 
 4. Faire un commit clair.
+5. Pousser la branche sur GitHub.
+
+## Commits récents
+
+Dernière fonctionnalité validée :
+
+```text
+Ajout MongoDB reviews workflow
+```
+
+Cette évolution ajoute :
+
+- Composer ;
+- la librairie `mongodb/mongodb` ;
+- le service `app/Services/reviews.php` ;
+- la configuration MongoDB locale ignorée par Git ;
+- le dépôt d'avis côté utilisateur ;
+- les statistiques et la validation des avis côté administrateur.
 
 ## Outil de suivi
 
-Un tableau de suivi peut etre tenu dans :
+Un tableau de suivi peut être tenu dans :
 
 - GitHub Projects ;
 - Trello ;

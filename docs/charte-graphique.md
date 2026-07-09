@@ -83,6 +83,6 @@ Proposition de maquettes a produire :
 
 1. Accueil
 2. Liste des menus
-3. Detail / commande d'un menu
+3. Détail / commande d'un menu
 
 Ces maquettes pourront etre realisees dans Figma, Penpot ou un outil equivalent, puis exportees en PDF.
