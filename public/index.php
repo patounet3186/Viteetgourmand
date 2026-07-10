@@ -24,6 +24,7 @@ $routes = [
     'admin-dashboard' => __DIR__ . '/../app/Views/admin/dashboard.php',
     'review-create' => __DIR__ . '/../app/Views/reviews/create.php',
     'admin-users' => __DIR__ . '/../app/Views/admin/users.php',
+    'contact' => __DIR__ . '/../app/Views/pages/contact.php',
 ];
 
 $view = $routes[$page] ?? $routes['home'];
@@ -39,6 +40,7 @@ $title =  match ($page) {
   'admin-dashboard' => 'Administration',
   'review-create' => 'Déposer un avis',
   'admin-users' => 'Gestion des rôles et des accès',
+  'contact' => 'Contact',
   default => 'Accueil',
 };
 

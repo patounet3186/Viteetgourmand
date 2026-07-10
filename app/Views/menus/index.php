@@ -78,7 +78,7 @@ $menus = $stmt->fetchAll();
             <?= number_format((float) $menu['base_price'], 2, ',', ' ') ?> €
           </p>
 
-          <a class="btn" href="?page=menu-show&id=<?= (int) $menu['id'] ?>">Voir le détail</a>
+          <a class="btn-app" href="?page=menu-show&id=<?= (int) $menu['id'] ?>">Voir le détail</a>
         </div>
       </article>
     </div>

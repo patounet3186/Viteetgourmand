@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endforeach; ?>
 
     <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <div class="alert alert-success" js-auto-hide><?= htmlspecialchars($success) ?></div>
     <?php endif; ?>
 
     <form method="post" class="card p-4 mt-4">
@@ -132,6 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             pour <?= (int) $menu['min_people'] ?> personnes minimum.
         </p>
 
-        <button type="submit" class="btn mt-3">Valider la commande</button>
+        <button type="submit" class="btn-app mt-3">Valider la commande</button>
     </form>
 </section>

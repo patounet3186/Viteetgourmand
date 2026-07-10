@@ -144,7 +144,7 @@ $users = $stmt->fetchAll();
                                         <option value="0" <?= (int) $user['is_active'] === 0 ? 'selected' : '' ?>>Inactif</option>
                                     </select>
 
-                                    <button type="submit" class="btn btn-sm">OK</button>
+                                    <button type="submit" class="btn-app btn-sm">OK</button>
                                 </form>
                             <?php endif; ?>
                         </td>

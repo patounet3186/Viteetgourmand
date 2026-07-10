@@ -114,7 +114,7 @@ $orders = $stmt->fetchAll();
             </div>
 
             <div class="col-md-3">
-                <button type="submit" class="btn">Filtrer</button>
+                <button type="submit" class="btn-app">Filtrer</button>
             </div>
         </div>
     </form>
@@ -158,7 +158,7 @@ $orders = $stmt->fetchAll();
                                     <?php endforeach; ?>
                                 </select>
 
-                                <button type="submit" class="btn btn-sm">OK</button>
+                                <button type="submit" class="btn-app btn-sm">OK</button>
                             </form>
                         </td>
                     </tr>

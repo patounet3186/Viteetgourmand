@@ -1,29 +1,95 @@
+:root {
+  --forest: #18352f;
+  --forest-light: #eef4ef;
+  --bordeaux: #b83232;
+  --bordeaux-dark: #952727;
+  --border: #dce7df;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  color: #18352f;
+  min-height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--forest);
   background: #f8faf7;
 }
 
-.site-header,
+.site-header {
+  position : sticky;
+  top: 0;
+  z-index: 1030;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(24, 53, 47, 0.06);
+}
+
+.site-header .navbar {
+  padding: 14px 0;
+}
+
+.navbar-brand {
+  color: var(--forest) !important;
+  font-size: 1.2rem;
+}
+
+.navbar-nav {
+  gap: 4px;
+}
+
+.nav-link {
+  color: var(--forest) !important;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  background: var(--forest-light);
+}
+
+.btn-app {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 18px;
+  border: 1px solid var(--bordeaux);
+  border-radius: 6px;
+  background: var(--bordeaux);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-app:hover {
+  background: var(--bordeaux-dark);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
 .site-footer {
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 8%;
-  background: #ffffff;
+  padding: 32px 8%;
+  background: var(--forest);
+  color: #ffffff;
 }
 
-.logo {
-  font-weight: bold;
-  color: #18352f;
-  text-decoration: none;
+.site-footer p {
+  margin: 0;
 }
 
-nav a,
 .site-footer a {
-  margin-left: 20px;
-  color: #18352f;
+  color: #ffffff;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -44,16 +110,6 @@ nav a,
 .hero p {
   max-width: 560px;
   font-size: 18px;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 18px;
-  background: #b83232;
-  color: #ffffff;
-  text-decoration: none;
-  border-radius: 6px;
 }
 
 .section {
@@ -98,8 +154,8 @@ nav a,
   color: #ffffff;
 }
 
-.menu-card-body-image .btn,
-.menu-detail-body-image .btn {
+.menu-card-body-image .btn-app,
+.menu-detail-body-image .btn-app {
   align-self: flex-start;
 }
 
@@ -113,6 +169,28 @@ nav a,
   font-size: 22px;
   font-weight: bold;
   color: #b83232;
+}
+
+/* Reviews */
+
+.reviews-section {
+  background: var(--forest-light);
+}
+
+.review-card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(24, 53, 47, 0.08);
+}
+
+.review-rating {
+  color: var(--bordeaux);
+  font-weight: 700;
+}
+
+.review-card blockquote {
+  margin: 0;
+  line-height: 1.6;
 }
 
 @media (max-width: 900px) {

@@ -23,7 +23,7 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link" href="?page=home">Accueil</a></li>
             <li class="nav-item"><a class="nav-link" href="?page=menus">Menus</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="?page=contact">Contact</a></li>
           <?php if (isset($_SESSION['user'])): ?>
 
             <?php if ($_SESSION['user']['role'] === 'admin'): ?>
@@ -73,7 +73,7 @@
   <footer class="site-footer">
     <p>Horaires :<br> Mardi au Dimanche,<br>
         11h - 15h 17h - 23h</p>
-    <a href="#">Mentions legales</a>
+    <a href="#">Mentions légales</a>
     <a href="#">CGV</a>
   </footer>
   <script src="/ECF-2026/public/js/menu-filters.js"></script>

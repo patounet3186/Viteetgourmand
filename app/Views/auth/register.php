@@ -72,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endforeach; ?>
 
     <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <a href="?page=login" class="btn">Se connecter</a>
+        <div class="alert alert-success" js-auto-hide><?= htmlspecialchars($success) ?></div>
+        <a href="?page=login" class="btn-app">Se connecter</a>
     <?php endif; ?>
 
     <form method="post" class="card p-4 mt-4">
@@ -120,6 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <button type="submit" class="btn mt-4">Créer mon compte</button>
+        <button type="submit" class="btn-app mt-4">Créer mon compte</button>
     </form>
 </section>
