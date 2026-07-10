@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $deliveryCity = trim($_POST['delivery_city'] ?? '');
     $peopleCount = (int) ($_POST['people_count'] ?? 0);
 
+    if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+        $errors[] = 'Le formulaire a expiré, merci de réessayer.';
+    }
+
     if ($eventDate === '' || $eventTime === '' || $deliveryAddress === '' || $deliveryCity === '') {
         $errors[] = 'Tous les champs de prestation sont obligatoires.';
     }
@@ -72,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'total_price' => $total,
         ]);
 
-        $success = 'Commande enregistree avec succes.';
+        $success = 'Commande enregistrée avec succès.';
     }
 }
 ?>
@@ -93,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="post" class="card p-4 mt-4">
+      <?= csrf_field() ?>
         <input type="hidden" name="menu_id" value="<?= (int) $menu['id'] ?>">
 
         <div class="row g-3">
@@ -102,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Heure souhaitee</label>
+                <label class="form-label">Heure souhaitée</label>
                 <input type="time" name="event_time" class="form-control" required>
             </div>
 

@@ -15,8 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $city = trim($_POST['city'] ?? '');
     $password = $_POST['password'] ?? '';
 
+    if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+        $errors[] = 'Le formulaire a expiré, merci de réessayer.';
+    }
+
     if ($firstName === '' || $lastName === '' || $email === '' || $password === '') {
-        $errors[] = 'Les champs obligatoires doivent etre remplis.';
+        $errors[] = 'Les champs obligatoires doivent être remplis.';
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -24,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/', $password)) {
-        $errors[] = 'Le mot de passe doit contenir 10 caracteres, une majuscule, une minuscule, un chiffre et un caractere special.';
+        $errors[] = 'Le mot de passe doit contenir 10 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
     }
 
     if (empty($errors)) {
@@ -34,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check->execute(['email' => $email]);
 
         if ($check->fetch()) {
-            $errors[] = 'Un compte existe deja avec cet email.';
+            $errors[] = 'Un compte existe déjà avec cet email.';
         } else {
             $stmt = $pdo->prepare("
                 INSERT INTO users
@@ -54,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             ]);
 
-            $success = 'Compte cree avec succes. Vous pouvez maintenant vous connecter.';
+            $success = 'Compte créé avec succès. Vous pouvez maintenant vous connecter.';
         }
     }
 }
@@ -73,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="post" class="card p-4 mt-4">
+      <?= csrf_field() ?>
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label">Prénom</label>

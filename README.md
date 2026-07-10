@@ -199,10 +199,8 @@ Pour tester les rôles :
 1. Créer un compte client depuis l'inscription.
 2. Créer un compte employé depuis l'inscription.
 3. Créer un compte administrateur depuis l'inscription.
-4. Modifier le champ `role` dans phpMyAdmin :
-   - `user`
-   - `employee`
-   - `admin`
+4. Se connecter avec un compte administrateur.
+5. Aller sur `?page=admin-users` pour gérer les rôles et l'état des comptes.
 
 Ne jamais indiquer de vrais mots de passe personnels dans ce fichier.
 
@@ -255,6 +253,7 @@ Les fichiers Markdown du dossier `docs/` pourront être exportés en PDF avant l
 
 Mesures déjà présentes :
 
+- Jeton CSRF sur les formulaires sensibles
 - Mots de passe hachés avec `password_hash`
 - Vérification de mot de passe avec `password_verify`
 - Requêtes SQL préparées avec PDO
@@ -266,7 +265,6 @@ Mesures déjà présentes :
 
 Mesures à compléter :
 
-- Jeton CSRF sur les formulaires sensibles
 - Validation plus complète des données
 - Limitation des tentatives de connexion
 - Reset de mot de passe
@@ -291,6 +289,5 @@ Le projet est en cours de développement sur la branche `feature/employee-space`
 Prochaines étapes prioritaires :
 
 1. Compléter les documents du dossier `docs/`.
-2. Ajouter des jetons CSRF sur les formulaires sensibles.
-3. Tester le déploiement alwaysdata.
-4. Exporter les documents finaux en PDF.
+2. Tester le déploiement alwaysdata.
+3. Exporter les documents finaux en PDF.

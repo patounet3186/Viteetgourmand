@@ -55,17 +55,17 @@ border-radius: 6px;
 
 Le rayon de bordure reste inferieur a 8px pour conserver un style sobre.
 
-## Accessibilite
+## Accessibilité
 
-Regles appliquees ou prevues :
+Règles appliquées ou prévues :
 
 - contrastes lisibles ;
-- structure HTML semantique ;
+- structure HTML sémantique ;
 - labels visibles sur les formulaires ;
 - boutons et liens explicites ;
-- mise en evidence des conditions de menu.
+- mise en évidence des conditions de menu.
 
-Points a completer avant rendu :
+Points a compléter avant rendu :
 
 - verification RGAA plus complete ;
 - focus visibles au clavier ;
@@ -85,4 +85,4 @@ Proposition de maquettes a produire :
 2. Liste des menus
 3. Détail / commande d'un menu
 
-Ces maquettes pourront etre realisees dans Figma, Penpot ou un outil equivalent, puis exportees en PDF.
+Ces maquettes pourront être réalisées dans Figma, Penpot ou un outil équivalent, puis exportées en PDF.

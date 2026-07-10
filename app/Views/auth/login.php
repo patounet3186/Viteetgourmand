@@ -8,6 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
+    if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+        $errors[] = 'Le formulaire a expiré, merci de réessayer.';
+    }
+
     if ($email === '' || $password === '') {
         $errors[] = 'Email et mot de passe obligatoires.';
     }
@@ -52,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endforeach; ?>
 
     <form method="post" class="card p-4 mt-4">
+      <?= csrf_field() ?>
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" name="email" class="form-control" required>

@@ -31,8 +31,8 @@ $menus = $stmt->fetchAll();
           <label for="filterTheme" class="form-label">Thème</label>
           <select id="filterTheme" class="form-select">
             <option value="">Tous</option>
-            <option value="Noel">Noël</option>
-            <option value="Paques">Pâques</option>
+            <option value="Noël">Noël</option>
+            <option value="Pâques">Pâques</option>
             <option value="Classique">Classique</option>
           </select>
         </div>
@@ -42,8 +42,8 @@ $menus = $stmt->fetchAll();
           <select id="filterDiet" class="form-select">
             <option value="">Tous</option>
             <option value="classique">Classique</option>
-            <option value="vegetarien">Végétarien</option>
-            <option value="vegan">Végan</option>
+            <option value="végétarien">Végétarien</option>
+            <option value="végan">Végan</option>
           </select>
         </div>
 

@@ -16,7 +16,7 @@ $statuses = [
     'accepte' => 'Acceptée',
     'en_preparation' => 'En préparation',
     'en_livraison' => 'En livraison',
-    'livre' => 'Livre',
+    'livre' => 'Livrée',
     'attente_materiel' => 'Attente matériel',
     'terminee' => 'Terminée',
     'annulee' => 'Annulée',
@@ -49,7 +49,7 @@ $orders = $stmt->fetchAll();
     <h1>Mon espace</h1>
 
     <?php if (isset($_GET['review']) && $_GET['review'] === 'created'): ?>
-        <div class="alert alert-success js-auto-hide">Votre avis à bien été envoyé.</div>
+        <div class="alert alert-success js-auto-hide">Votre avis a bien été envoyé.</div>
     <?php endif; ?>
 
     <div class="card p-4 mb-4">

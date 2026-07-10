@@ -42,6 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_action'])) {
     $reviewId = $_POST['review_id'] ?? '';
     $reviewAction = $_POST['review_action'] ?? '';
 
+    if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+        header('Location: ?page=admin-dashboard&csrf=1');
+        exit;
+    }
+
     if ($reviewId !== '' && in_array($reviewAction, ['validated', 'refused'], true)) {
         updateReviewStatus($reviewId, $reviewAction);
         header('Location: ?page=admin-dashboard&review_updated=1');
@@ -150,6 +155,7 @@ $averageRating = $totalReviews > 0 ? $ratingSum / $totalReviews : null;
                         <td><?= htmlspecialchars($review['created_at'] ?? '') ?></td>
                         <td>
                             <form method="post" class="d-inline">
+                              <?= csrf_field() ?>
                                 <input type="hidden" name="review_id" value="<?= htmlspecialchars($review['id'] ?? '') ?>">
                                 <button type="submit" name="review_action" value="validated" class="btn btn-sm btn-success">
                                     Valider
@@ -157,6 +163,7 @@ $averageRating = $totalReviews > 0 ? $ratingSum / $totalReviews : null;
                             </form>
 
                             <form method="post" class="d-inline">
+                              <?= csrf_field() ?>
                                 <input type="hidden" name="review_id" value="<?= htmlspecialchars($review['id'] ?? '') ?>">
                                 <button type="submit" name="review_action" value="refused" class="btn btn-sm btn-outline-danger">
                                     Refuser

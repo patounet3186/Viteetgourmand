@@ -133,10 +133,6 @@ Lorsqu'un avis est refusé, son statut MongoDB passe à `refused`.
 
 ## Rôles utilisateurs
 
-Les rôles disponibles sont :
+Les rôles et l'état des comptes sont gérés par l'administrateur depuis la page `Accès`.
 
-- `user` : client ;
-- `employee` : employé ;
-- `admin` : administrateur.
-
-Les rôles peuvent être ajustés dans phpMyAdmin pendant les tests.
+Cette page permet de modifier le rôle d'un compte et de l'activer ou le désactiver, sans afficher les données personnelles non nécessaires.

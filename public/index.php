@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 session_start();
 ob_start();
+require_once __DIR__ . '/../app/Services/csrf.php';
 
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -22,12 +23,13 @@ $routes = [
     'employee-orders' => __DIR__ . '/../app/Views/employee/orders.php',
     'admin-dashboard' => __DIR__ . '/../app/Views/admin/dashboard.php',
     'review-create' => __DIR__ . '/../app/Views/reviews/create.php',
+    'admin-users' => __DIR__ . '/../app/Views/admin/users.php',
 ];
 
 $view = $routes[$page] ?? $routes['home'];
 $title =  match ($page) {
   'menus' => 'Nos menus',
-  'menu-show' => 'Detail du menu',
+  'menu-show' => 'Détail du menu',
   'order-create' => 'Commander',
   'register' => 'Inscription',
   'login' => 'Connexion',
@@ -36,6 +38,7 @@ $title =  match ($page) {
   'employee-orders' => 'Gestion des commandes',
   'admin-dashboard' => 'Administration',
   'review-create' => 'Déposer un avis',
+  'admin-users' => 'Gestion des rôles et des accès',
   default => 'Accueil',
 };
 

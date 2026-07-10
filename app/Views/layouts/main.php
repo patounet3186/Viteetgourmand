@@ -30,6 +30,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="?page=admin-dashboard">Admin</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="?page=admin-users">Accès</a>
+                </li>
             <?php endif; ?>
 
             <?php if (in_array($_SESSION['user']['role'], ['employee', 'admin'], true)): ?>
@@ -67,7 +71,8 @@
   </main>
 
   <footer class="site-footer">
-    <p>Horaires : lundi au dimanche, 9h - 19h</p>
+    <p>Horaires :<br> Mardi au Dimanche,<br>
+        11h - 15h 17h - 23h</p>
     <a href="#">Mentions legales</a>
     <a href="#">CGV</a>
   </footer>

@@ -207,7 +207,8 @@ L'espace administrateur permet :
 - de consulter les statistiques par menu ;
 - de consulter le nombre d'avis en attente ;
 - de consulter la note moyenne ;
-- de valider ou refuser les avis clients stockés dans MongoDB.
+- de valider ou refuser les avis clients stockés dans MongoDB;
+- de modifier les rôles et les accès des utilisateurs.
 
 ### Avis clients
 
@@ -224,14 +225,15 @@ Mesures présentes :
 - PDO avec exceptions ;
 - requêtes SQL préparées ;
 - hachage des mots de passe ;
+- jetons CSRF sur les formulaires sensibles ;
 - échappement HTML avec `htmlspecialchars` ;
 - fichiers de configuration ignorés par Git ;
 - séparation des données relationnelles et NoSQL ;
 - contrôle d'accès par rôle.
+- Principe de minimisation : chaque rôle accède uniquement aux données nécessaires à sa mission.
 
 Améliorations à ajouter :
 
-- jetons CSRF ;
 - validation serveur plus stricte ;
 - limitation des tentatives de connexion ;
 - reset de mot de passe sécurisé ;

@@ -53,6 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $existingReview === null) {
     $rating = (int) ($_POST['rating'] ?? 0);
     $comment = trim($_POST['comment'] ?? '');
 
+    if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+        $errors[] = 'Le formulaire a expiré, merci de réessayer.';
+    }
+
     if ($rating < 1 || $rating > 5) {
         $errors[] = 'La note doit être comprise entre 1 et 5.';
     }
@@ -85,14 +89,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $existingReview === null) {
         <p>Commande #<?= (int) $order['id'] ?> - <?= htmlspecialchars($order['menu_title']) ?></p>
 
         <?php if ($existingReview !== null): ?>
-            <div class="alert alert-info">Vous avez déjà dépose un avis pour cette commande.</div>
-            <a href="?page=account" class="btn btn-primary">Retour a mon espace</a>
+            <div class="alert alert-info">Vous avez déjà déposé un avis pour cette commande.</div>
+            <a href="?page=account" class="btn btn-primary">Retour à mon espace</a>
         <?php else: ?>
             <?php foreach ($errors as $error): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endforeach; ?>
 
             <form method="post">
+              <?= csrf_field() ?>
                 <div class="mb-3">
                     <label class="form-label">Note</label>
                     <select name="rating" class="form-select" required>

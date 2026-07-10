@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 
 if (!in_array($_SESSION['user']['role'], ['employee', 'admin'], true)) {
     http_response_code(403);
-    echo '<section class="section"><h1>Acces refuse</h1></section>';
+    echo '<section class="section"><h1>Accès refusé</h1></section>';
     return;
 }
 
@@ -35,6 +35,11 @@ if ($selectedStatus !== '' && !array_key_exists($selectedStatus, $statuses)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $orderId = (int) ($_POST['order_id'] ?? 0);
     $newStatus = $_POST['status'] ?? '';
+
+    if (!csrf_is_valid($_POST['csrf_token'] ?? null)) {
+        header('Location: ?page=employee-orders&csrf=1');
+        exit;
+    }
 
     if ($orderId > 0 && array_key_exists($newStatus, $statuses)) {
         $stmt = $pdo->prepare("
@@ -142,6 +147,7 @@ $orders = $stmt->fetchAll();
                         <td><?= htmlspecialchars($statuses[$order['status']] ?? $order['status']) ?></td>
                         <td>
                             <form method="post" class="d-flex gap-2">
+                              <?= csrf_field() ?>
                                 <input type="hidden" name="order_id" value="<?= (int) $order['id'] ?>">
 
                                 <select name="status" class="form-select form-select-sm">
