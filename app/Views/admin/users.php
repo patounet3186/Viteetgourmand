@@ -17,7 +17,7 @@ $pdo = getDatabase();
 $currentUserId = (int) $_SESSION['user']['id'];
 
 $roles = [
-    'user' => 'Utilisateur',
+    'user' => 'Client',
     'employee' => 'Employé',
     'admin' => 'Administrateur',
 ];
@@ -31,40 +31,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   $userId = (int) ($_POST['user_id'] ?? 0);
-  $role = $_POST['role'] ?? '';
-  $isActive = isset($_POST['is_active']) ? (int) $_POST['is_active'] : -1;
-
-  if ($userId === $currentUserId) {
-    $errors[] = 'Vous ne pouvez pas modifier votre propre compte administrateur.';
-  }
+  $isActive = (string) ($_POST['is_active'] ?? '');
 
   if ($userId <= 0) {
     $errors[] = 'Utilisateur invalide.';
   }
 
-  if (!array_key_exists($role, $roles)) {
-    $errors[] = 'Rôle invalide.';
-  }
-
-  if (!in_array($isActive, [0, 1], true)) {
+  if (!in_array($isActive, ['0', '1'], true)) {
     $errors[] = 'Statut invalide.';
   }
 
   if (empty($errors)) {
-    $stmt = $pdo->prepare("
-        UPDATE users
-        SET role = :role, is_active = :is_active
-        WHERE id = :id
-    ");
+      $targetStmt = $pdo->prepare(
+          'SELECT role FROM users WHERE id = :id'
+      );
+      $targetStmt->execute(['id' => $userId]);
+      $targetUser = $targetStmt->fetch();
+      if (!$targetUser) {
+          $errors[] = 'Utilisateur introuvable.';
+      } elseif ($targetUser['role'] !== 'employee') {
+          $errors[] = 'Seul le statut d’un employé peut être modifié.';
+      }
+  }
 
-    $stmt->execute([
-      'role' => $role,
-      'is_active' => $isActive,
-      'id' => $userId,
-    ]);
-
-    header('Location: ?page=admin-users&updated=1');
-    exit;
+  if (empty($errors)) {
+      $updateStmt = $pdo->prepare(
+          "UPDATE users
+           SET is_active = :is_active
+           WHERE id = :id AND role = 'employee'"
+      );
+      $updateStmt->execute([
+          'is_active' => (int) $isActive,
+          'id' => $userId,
+      ]);
+      header('Location: ?page=admin-users&updated=1');
+      exit;
   }
 }
 
@@ -78,7 +79,7 @@ $users = $stmt->fetchAll();
 ?>
 
 <section class="section">
-    <h1>Gestion des rôles et des accès</h1>
+    <h1>Gestion des accès employés</h1>
     <p class="text-muted">
         Cette page affiche uniquement les informations nécessaires à la gestion des rôles et des accès.
     </p>
@@ -124,28 +125,35 @@ $users = $stmt->fetchAll();
                         </td>
                         <td><?= htmlspecialchars($user['created_at']) ?></td>
                         <td>
-                            <?php if ($isCurrentUser): ?>
-                                <span class="text-muted">Non modifiable</span>
-                            <?php else: ?>
+                            <?php if ($user['role'] === 'employee'): ?>
                                 <form method="post" class="d-flex gap-2">
                                     <?= csrf_field() ?>
-                                    <input type="hidden" name="user_id" value="<?= (int) $user['id'] ?>">
 
-                                    <select name="role" class="form-select form-select-sm">
-                                        <?php foreach ($roles as $value => $label): ?>
-                                            <option value="<?= htmlspecialchars($value) ?>" <?= $user['role'] === $value ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($label) ?>
-                                            </option>
-                                        <?php endforeach; ?>
+                                    <input
+                                        type="hidden"
+                                        name="user_id"
+                                        value="<?= (int) $user['id'] ?>"
+                                    >
+
+                                    <select
+                                        name="is_active"
+                                        class="form-select form-select-sm"
+                                        aria-label="État du compte employé"
+                                    >
+                                        <option value="1" <?= (int) $user['is_active'] === 1 ? 'selected' : '' ?>>
+                                            Actif
+                                        </option>
+                                        <option value="0" <?= (int) $user['is_active'] === 0 ? 'selected' : '' ?>>
+                                            Inactif
+                                        </option>
                                     </select>
 
-                                    <select name="is_active" class="form-select form-select-sm">
-                                        <option value="1" <?= (int) $user['is_active'] === 1 ? 'selected' : '' ?>>Actif</option>
-                                        <option value="0" <?= (int) $user['is_active'] === 0 ? 'selected' : '' ?>>Inactif</option>
-                                    </select>
-
-                                    <button type="submit" class="btn-app btn-sm">OK</button>
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        Mettre à jour
+                                    </button>
                                 </form>
+                            <?php else: ?>
+                                <span class="text-muted">Consultation uniquement</span>
                             <?php endif; ?>
                         </td>
                     </tr>

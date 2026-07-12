@@ -158,7 +158,7 @@ $orders = $stmt->fetchAll();
                                     <?php endforeach; ?>
                                 </select>
 
-                                <button type="submit" class="btn-app btn-sm">OK</button>
+                                <button type="submit" class="btn btn-sm btn-primary">OK</button>
                             </form>
                         </td>
                     </tr>

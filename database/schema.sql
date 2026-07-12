@@ -82,8 +82,8 @@ INSERT INTO menus (title, description, theme, diet, min_people, base_price, cond
 ('Menu Classique', 'Menu simple et efficace pour repas de groupe.', 'Classique', 'végétarien', 2, 45.00, 'Commandé au moins 48h avant la prestation.', 12, 'public/images/menu-classique.webp');
 
 INSERT INTO dishes (name, category, description, allergens) VALUES
-('Veloute de saison', 'entrée', 'Soupe maison selon les légumes disponibles.', 'lait'),
-('Volaille rôtie', 'plat', 'Plat chaud accompagne de légumes.', 'aucun'),
+('Veloute de saison', 'entree', 'Soupe maison selon les legumes disponibles.', 'lait'),
+('Volaille rotie', 'plat', 'Plat chaud accompagne de legumes.', 'aucun'),
 ('Tarte gourmande', 'dessert', 'Dessert maison aux fruits.', 'gluten, oeufs');
 
 INSERT INTO menu_dishes (menu_id, dish_id) VALUES

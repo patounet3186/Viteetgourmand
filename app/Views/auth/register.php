@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endforeach; ?>
 
     <?php if ($success): ?>
-        <div class="alert alert-success" js-auto-hide><?= htmlspecialchars($success) ?></div>
+        <div class="alert alert-success js-auto-hide"><?= htmlspecialchars($success) ?></div>
         <a href="?page=login" class="btn-app">Se connecter</a>
     <?php endif; ?>
 

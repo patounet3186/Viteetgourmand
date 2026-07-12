@@ -120,7 +120,7 @@ $averageRating = $totalReviews > 0 ? $ratingSum / $totalReviews : null;
             <tbody>
                 <?php foreach ($stats as $stat): ?>
                     <tr>
-                        <td><?= htmlspecialchars($stat['title']) ?></td>
+                        <td class="table-cell-wrap"><?= htmlspecialchars($stat['title']) ?></td>
                         <td><?= (int) $stat['orders_count'] ?></td>
                         <td><?= number_format((float) $stat['turnover'], 2, ',', ' ') ?> €</td>
                     </tr>
@@ -151,7 +151,7 @@ $averageRating = $totalReviews > 0 ? $ratingSum / $totalReviews : null;
                         <td><?= htmlspecialchars($review['user_name'] ?? '') ?></td>
                         <td><?= htmlspecialchars($review['menu_title'] ?? '') ?></td>
                         <td><?= (int) ($review['rating'] ?? 0) ?>/5</td>
-                        <td><?= htmlspecialchars($review['comment'] ?? '') ?></td>
+                        <td class="table-cell-wrap"><?= htmlspecialchars($review['comment'] ?? '') ?></td>
                         <td><?= htmlspecialchars($review['created_at'] ?? '') ?></td>
                         <td>
                             <form method="post" class="d-inline">
