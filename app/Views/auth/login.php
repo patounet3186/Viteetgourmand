@@ -41,8 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'role' => $user['role'],
             ];
 
-            header('Location: ?page=account');
-            exit;
+          $redirectPage = match ($user['role']) {
+              'user' => 'home',
+              'employee' => 'employee-orders',
+              'admin' => 'admin-dashboard',
+              default => 'home',
+          };
+          header('Location: ?page=' . $redirectPage);
+          exit;
         }
     }
 }
