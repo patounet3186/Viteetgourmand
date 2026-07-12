@@ -171,6 +171,55 @@ body {
   color: #b83232;
 }
 
+.table-responsive > .table {
+  width: max-content;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.table-responsive > .table th,
+.table-responsive > .table td {
+  white-space: nowrap;
+}
+
+.table-responsive > .table td.table-cell-wrap {
+  width: 24rem;
+  max-width: 24rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.table-responsive > .table > :not(caption) > * > * {
+  padding: 0.3rem 0.55rem;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+.table-responsive > .table thead th {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  font-size: 0.92rem;
+}
+
+.menu-management-table th,
+.menu-management-table td {
+  white-space: nowrap;
+}
+
+.menu-management-form {
+  flex-wrap: nowrap;
+}
+
+.menu-stock-input {
+  width: 5.5rem;
+  min-width: 5.5rem;
+}
+
+.menu-status-select {
+  width: 7.5rem;
+  min-width: 7.5rem;
+}
+
 /* Reviews */
 
 .reviews-section {

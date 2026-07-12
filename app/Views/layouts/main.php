@@ -13,17 +13,41 @@
   <header class="site-header">
     <nav class="navbar navbar-expand-lg bg-white w-100">
       <div class="container">
-        <a class="navbar-brand fw-bold text-success" href="?page=home">Vite & Gourmand</a>
+        <?php
+        $isBackOffice = isset($_SESSION['user'])
+            && in_array($_SESSION['user']['role'], ['employee', 'admin'], true);
+        ?>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <?php if ($isBackOffice): ?>
+          <span class="navbar-brand fw-bold text-success mb-0">
+            Vite & Gourmand
+          </span>
+        <?php else: ?>
+          <a class="navbar-brand fw-bold text-success" href="?page=home">
+            Vite & Gourmand
+          </a>
+        <?php endif; ?>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Ouvrir le menu de navigation"
+        >
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavbar">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="?page=home">Accueil</a></li>
-            <li class="nav-item"><a class="nav-link" href="?page=menus">Menus</a></li>
-            <li class="nav-item"><a class="nav-link" href="?page=contact">Contact</a></li>
+            <?php if (!isset($_SESSION['user']) || $_SESSION['user']['role'] === 'user'): ?>
+              <li class="nav-item"><a class="nav-link" href="?page=home">Accueil</a></li>
+              <li class="nav-item"><a class="nav-link" href="?page=menus">Menus</a></li>
+              <li class="nav-item">
+                  <a class="nav-link" href="?page=contact">Contact</a>
+              </li>
+            <?php endif; ?>
           <?php if (isset($_SESSION['user'])): ?>
 
             <?php if ($_SESSION['user']['role'] === 'admin'): ?>
@@ -39,6 +63,10 @@
             <?php if (in_array($_SESSION['user']['role'], ['employee', 'admin'], true)): ?>
               <li class="nav-item">
                   <a class="nav-link" href="?page=employee-orders">Commandes</a>
+              </li>
+
+              <li class="nav-item">
+                  <a class="nav-link" href="?page=employee-menus">Gestion des menus</a>
               </li>
             <?php endif; ?>
 
