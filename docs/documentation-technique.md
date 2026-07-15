@@ -2,17 +2,38 @@
 
 ## Architecture
 
-Le projet utilise une architecture PHP simple avec un routeur frontal.
+Le projet utilise une architecture MVC avec un contrôleur frontal et un autoload PSR-4 fourni par Composer.
 
 ```text
 ECF-2026/
   app/
+    Controllers/
+      AdminController.php
+      AuthController.php
+      ContactController.php
+      DishController.php
+      HomeController.php
+      MenuController.php
+      OrderController.php
+      ReviewController.php
+    Core/
+      Controller.php
+      HttpException.php
+    Models/
+      ContactMessage.php
+      Dish.php
+      Menu.php
+      Model.php
+      Order.php
+      Review.php
+      User.php
     Services/
-      reviews.php
+      csrf.php
     Views/
       admin/
       auth/
       employee/
+      errors/
       layouts/
       menus/
       orders/
@@ -35,13 +56,21 @@ Le point d'entrée public est :
 public/index.php
 ```
 
-Il lit le paramètre `page` dans l'URL et charge la vue correspondante.
+Il lit le paramètre `page`, sélectionne une action de contrôleur, puis injecte les données retournées dans le layout principal.
 
 Exemple :
 
 ```text
 ?page=menus
 ```
+
+Répartition des responsabilités :
+
+- les modèles exécutent les requêtes MySQL ou MongoDB ;
+- les contrôleurs gèrent les requêtes HTTP, les droits, les validations et les redirections ;
+- les vues affichent uniquement les données reçues ;
+- `app/Core/Controller.php` fournit le rendu, les redirections et les contrôles d'accès communs ;
+- `app/Core/HttpException.php` centralise les réponses `403` et `404`.
 
 ## Configuration
 
@@ -67,7 +96,7 @@ config/database.example.php
 
 ## Dépendances PHP
 
-Le projet utilise Composer pour charger la librairie MongoDB :
+Le projet utilise Composer pour charger la librairie MongoDB et les classes du namespace `App` :
 
 ```bash
 composer install
@@ -78,6 +107,8 @@ Dépendance principale :
 ```text
 mongodb/mongodb
 ```
+
+L'autoload PSR-4 associe le namespace `App\` au dossier `app/`.
 
 L'extension PHP `mongodb` doit être activée dans XAMPP.
 
@@ -110,10 +141,10 @@ Collection utilisée :
 reviews
 ```
 
-Les avis clients sont gérés par :
+Les avis clients sont gérés par le modèle :
 
 ```text
-app/Services/reviews.php
+app/Models/Review.php
 ```
 
 Exemple de document MongoDB :
@@ -196,7 +227,9 @@ L'espace employé permet :
 
 - de consulter les commandes ;
 - de filtrer les commandes par statut ;
-- de modifier le statut d'une commande.
+- de modifier le statut d'une commande ;
+- de créer des menus et de gérer leur stock et leur visibilité ;
+- de créer et modifier les plats proposés dans les menus.
 
 ### Espace administrateur
 
@@ -208,7 +241,7 @@ L'espace administrateur permet :
 - de consulter le nombre d'avis en attente ;
 - de consulter la note moyenne ;
 - de valider ou refuser les avis clients stockés dans MongoDB;
-- de modifier les rôles et les accès des utilisateurs.
+- de créer des comptes employés et de modifier leur état d'activation.
 
 ### Avis clients
 
@@ -229,7 +262,8 @@ Mesures présentes :
 - échappement HTML avec `htmlspecialchars` ;
 - fichiers de configuration ignorés par Git ;
 - séparation des données relationnelles et NoSQL ;
-- contrôle d'accès par rôle.
+- contrôle d'accès par rôle ;
+- séparation MVC entre requêtes, traitements et affichage.
 - Principe de minimisation : chaque rôle accède uniquement aux données nécessaires à sa mission.
 
 Améliorations à ajouter :
@@ -261,6 +295,12 @@ Déploiement cible possible :
 
 ## Tests manuels
 
+La séparation des responsabilités MVC et l'autoload peuvent être contrôlés avec :
+
+```bash
+composer test:mvc
+```
+
 Parcours à vérifier :
 
 - ouvrir la page d'accueil ;
@@ -275,4 +315,6 @@ Parcours à vérifier :
 - déposer un avis depuis l'espace utilisateur ;
 - valider ou refuser l'avis depuis l'espace administrateur ;
 - vérifier la présence de l'avis dans MongoDB Atlas ;
+- créer puis modifier un plat depuis l'espace employé ;
+- vérifier qu'un client reçoit une réponse `403` sur une route employé ;
 - se déconnecter.

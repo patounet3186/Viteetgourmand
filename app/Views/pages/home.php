@@ -1,10 +1,3 @@
-<?php
-
-require_once __DIR__ . '/../../Services/reviews.php';
-
-$reviews = array_slice(getReviewsByStatus('validated'), 0, 3);
-?>
-
 <section class="hero">
   <div>
     <h1>Des menus traiteur pour vos moments importants</h1>

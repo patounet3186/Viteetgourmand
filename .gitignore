@@ -7,3 +7,4 @@ node_modules/
 Thumbs.db
 storage/reviews.json
 config/mongodb.php
+/.vscode/

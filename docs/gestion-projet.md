@@ -19,12 +19,13 @@ feature/auth
 feature/orders
 feature/employee-space
 feature/reviews
+feature/menu-dishes-management
 ```
 
 La branche de travail actuelle est :
 
 ```text
-feature/employee-space
+feature/menu-dishes-management
 ```
 
 ## Backlog prioritaire
@@ -68,20 +69,20 @@ git status --ignored
 
 ## Commits récents
 
-Dernière fonctionnalité validée :
+Dernière évolution technique validée :
 
 ```text
-Ajout MongoDB reviews workflow
+Refactorisation du projet vers une architecture MVC
 ```
 
 Cette évolution ajoute :
 
-- Composer ;
-- la librairie `mongodb/mongodb` ;
-- le service `app/Services/reviews.php` ;
-- la configuration MongoDB locale ignorée par Git ;
-- le dépôt d'avis côté utilisateur ;
-- les statistiques et la validation des avis côté administrateur.
+- un contrôleur frontal dans `public/index.php` ;
+- des contrôleurs par domaine dans `app/Controllers` ;
+- des modèles MySQL et MongoDB dans `app/Models` ;
+- un autoload PSR-4 avec Composer ;
+- des vues limitées à l'affichage ;
+- une gestion commune des redirections et des erreurs HTTP.
 
 ## Outil de suivi
 

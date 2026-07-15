@@ -10,12 +10,24 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: "Segoe UI", Arial, sans-serif;
   color: var(--forest);
   background: #f8faf7;
+}
+
+main {
+  flex: 1 0 auto;
+  width: 100%;
 }
 
 .site-header {
@@ -73,6 +85,7 @@ body {
 }
 
 .site-footer {
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;

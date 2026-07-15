@@ -26,11 +26,20 @@ Le projet répond au besoin de l'entreprise fictive **Vite & Gourmand**, traiteu
 
 - Front-end : HTML5, CSS3, Bootstrap 5, JavaScript
 - Back-end : PHP 8 avec PDO
+- Architecture : MVC avec contrôleur frontal et autoload PSR-4
 - Dépendances PHP : Composer
 - Base relationnelle : MySQL/MariaDB
 - Base non relationnelle : MongoDB Atlas
 - Serveur local : XAMPP / Apache
 - Hébergement cible : alwaysdata ou équivalent compatible PHP/MySQL
+
+## Architecture MVC
+
+- `app/Models/` contient les accès MySQL et MongoDB.
+- `app/Controllers/` contient les validations, autorisations et traitements HTTP.
+- `app/Views/` contient les gabarits d'affichage.
+- `app/Core/` contient le contrôleur de base et la gestion des erreurs HTTP.
+- `public/index.php` associe chaque valeur de `page` à une action de contrôleur.
 
 ## Installation locale
 
@@ -187,7 +196,12 @@ http://localhost/ECF-2026/public/
 | Commande | `?page=order-create&menu_id=1` |
 | Dépôt d'avis | `?page=review-create&order_id=1` |
 | Gestion employé des commandes | `?page=employee-orders` |
+| Gestion employé des menus | `?page=employee-menus` |
+| Gestion employé des plats | `?page=employee-dishes` |
+| Modification d'un plat | `?page=employee-dish-edit&id=1` |
 | Tableau de bord administrateur | `?page=admin-dashboard` |
+| Gestion des accès employés | `?page=admin-users` |
+| Contact | `?page=contact` |
 | Déconnexion | `?page=logout` |
 
 ## Identifiants de test
@@ -197,10 +211,10 @@ Les comptes de démonstration sont créés depuis l'interface d'inscription.
 Pour tester les rôles :
 
 1. Créer un compte client depuis l'inscription.
-2. Créer un compte employé depuis l'inscription.
-3. Créer un compte administrateur depuis l'inscription.
-4. Se connecter avec un compte administrateur.
-5. Aller sur `?page=admin-users` pour gérer les rôles et l'état des comptes.
+2. Pour amorcer l'environnement local, attribuer le rôle `admin` à un compte de test depuis la base.
+3. Se connecter avec ce compte administrateur.
+4. Aller sur `?page=admin-users` pour créer les comptes employés et gérer leur état.
+5. Vérifier qu'un client ne peut pas accéder aux espaces employé ou administrateur.
 
 Ne jamais indiquer de vrais mots de passe personnels dans ce fichier.
 
@@ -224,6 +238,7 @@ git switch -c feature/reviews
 Avant chaque commit :
 
 ```bash
+composer test:mvc
 C:\xampp\php\php.exe -l public/index.php
 git status
 ```
@@ -273,7 +288,7 @@ Mesures à compléter :
 
 ## État du projet
 
-Le projet est en cours de développement sur la branche `feature/employee-space`.
+Le projet est en cours de développement sur la branche `feature/menu-dishes-management`.
 
 Éléments finalisés ou avancés :
 
@@ -285,6 +300,9 @@ Le projet est en cours de développement sur la branche `feature/employee-space`
 6. Tableau de bord administrateur.
 7. Avis clients stockés dans MongoDB Atlas.
 8. Validation ou refus des avis par l'administrateur.
+9. Création et activation des comptes employés par l'administrateur.
+10. Création et modification des plats par l'employé ou l'administrateur.
+11. Refactorisation du projet selon le modèle MVC.
 
 Prochaines étapes prioritaires :
 

@@ -1,19 +1,3 @@
-<?php
-
-require_once __DIR__ . '/../../../config/database.php';
-
-$pdo = getDatabase();
-
-$stmt = $pdo->query("
-    SELECT id, title, description, theme, diet, min_people, base_price, stock, image_url
-    FROM menus
-    WHERE is_active = 1
-    ORDER BY created_at DESC
-");
-
-$menus = $stmt->fetchAll();
-?>
-
 <section class="section">
   <h1>Nos menus</h1>
   <p>Découvrez les menus proposés par Vite & Gourmand.</p>

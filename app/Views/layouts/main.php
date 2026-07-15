@@ -13,11 +13,6 @@
   <header class="site-header">
     <nav class="navbar navbar-expand-lg bg-white w-100">
       <div class="container">
-        <?php
-        $isBackOffice = isset($_SESSION['user'])
-            && in_array($_SESSION['user']['role'], ['employee', 'admin'], true);
-        ?>
-
         <?php if ($isBackOffice): ?>
           <span class="navbar-brand fw-bold text-success mb-0">
             Vite & Gourmand
@@ -41,16 +36,16 @@
 
         <div class="collapse navbar-collapse" id="mainNavbar">
           <ul class="navbar-nav ms-auto">
-            <?php if (!isset($_SESSION['user']) || $_SESSION['user']['role'] === 'user'): ?>
+            <?php if ($currentUser === null || ($currentUser['role'] ?? '') === 'user'): ?>
               <li class="nav-item"><a class="nav-link" href="?page=home">Accueil</a></li>
               <li class="nav-item"><a class="nav-link" href="?page=menus">Menus</a></li>
               <li class="nav-item">
                   <a class="nav-link" href="?page=contact">Contact</a>
               </li>
             <?php endif; ?>
-          <?php if (isset($_SESSION['user'])): ?>
+          <?php if ($currentUser !== null): ?>
 
-            <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+            <?php if (($currentUser['role'] ?? '') === 'admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="?page=admin-dashboard">Admin</a>
                 </li>
@@ -60,13 +55,17 @@
                 </li>
             <?php endif; ?>
 
-            <?php if (in_array($_SESSION['user']['role'], ['employee', 'admin'], true)): ?>
+            <?php if (in_array($currentUser['role'] ?? '', ['employee', 'admin'], true)): ?>
               <li class="nav-item">
                   <a class="nav-link" href="?page=employee-orders">Commandes</a>
               </li>
 
               <li class="nav-item">
                   <a class="nav-link" href="?page=employee-menus">Gestion des menus</a>
+              </li>
+
+              <li class="nav-item">
+                  <a class="nav-link" href="?page=employee-dishes">Gestion des plats</a>
               </li>
             <?php endif; ?>
 

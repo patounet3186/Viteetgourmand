@@ -1,25 +1,4 @@
 <?php
-
-require_once __DIR__ . '/../../../config/database.php';
-
-$pdo = getDatabase();
-
-$id = (int) ($_GET['id'] ?? 0);
-
-$stmt = $pdo->prepare("
-    SELECT *
-    FROM menus
-    WHERE id = :id AND is_active = 1
-");
-
-$stmt->execute(['id' => $id]);
-$menu = $stmt->fetch();
-
-if (!$menu) {
-    echo '<section class="section"><h1>Menu introuvable</h1></section>';
-    return;
-}
-
 $imageUrl = $menu['image_url'] ?? '';
 if ($imageUrl !== '' && !str_starts_with($imageUrl, 'http')) {
     $imageUrl = '/ECF-2026/' . ltrim($imageUrl, '/');
@@ -43,6 +22,42 @@ $imageStyle = $imageUrl !== '' ? "--menu-image: url('" . htmlspecialchars($image
         <li>Minimum : <?= (int) $menu['min_people'] ?> personnes</li>
         <li>Stock disponible : <?= (int) $menu['stock'] ?></li>
       </ul>
+<section class="mt-4" aria-labelledby="menu-composition-title">
+    <h2 id="menu-composition-title" class="h4">Composition du menu</h2>
+
+    <?php if (empty($dishes)): ?>
+        <p>Aucun plat n’est encore associé à ce menu.</p>
+    <?php else: ?>
+        <div class="row g-3">
+            <?php foreach ($dishes as $dish): ?>
+                <div class="col-md-4">
+                    <article class="menu-dish h-100">
+                        <h3 class="h5">
+                            <?= htmlspecialchars(
+                                $categoryLabels[$dish['category']] ?? 'Plat'
+                            ) ?>
+                            :
+                            <?= htmlspecialchars($dish['name']) ?>
+                        </h3>
+
+                        <?php if (!empty($dish['description'])): ?>
+                            <p><?= htmlspecialchars($dish['description']) ?></p>
+                        <?php endif; ?>
+
+                        <p class="small mb-0">
+                            <strong>Allergènes :</strong>
+                            <?= htmlspecialchars(
+                                !empty($dish['allergens'])
+                                    ? $dish['allergens']
+                                    : 'Non renseignés'
+                            ) ?>
+                        </p>
+                    </article>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</section>
 
       <p class="price">
         <?= number_format((float) $menu['base_price'], 2, ',', ' ') ?> €
