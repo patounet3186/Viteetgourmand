@@ -1,68 +1,80 @@
-<?php
-
-require_once __DIR__ . '/../../../config/database.php';
-
-$pdo = getDatabase();
-
-$stmt = $pdo->query("
-    SELECT id, title, description, theme, diet, min_people, base_price, stock
-    FROM menus
-    WHERE is_active = 1
-    ORDER BY created_at DESC
-");
-
-$menus = $stmt->fetchAll();
-?>
-
 <section class="section">
+  <?php
+  $themes = array_values(array_unique(array_map(
+      static fn (array $menu): string => (string) $menu['theme'],
+      $menus
+  )));
+  sort($themes);
+  ?>
   <h1>Nos menus</h1>
-  <p>Decouvrez les menus proposes par Vite & Gourmand.</p>
+  <p>Découvrez les menus proposés par Vite & Gourmand.</p>
   <div class="card mt-4">
     <div class="card-body">
       <h2 class="h5">Filtrer les menus</h2>
 
       <div class="row g-3">
-        <div class="col-md-3">
-          <label for="filterMaxPrice" class="form-label">Prix maximum</label>
-          <input type="number" id="filterMaxPrice" class="form-control" placeholder="Ex : 150">
+        <div class="col-md">
+          <label for="filterMinPrice" class="form-label">Prix minimum</label>
+          <input type="number" id="filterMinPrice" class="form-control"
+            min="0" step="1" placeholder="Ex : 40">
         </div>
 
-        <div class="col-md-3">
-          <label for="filterTheme" class="form-label">Theme</label>
+        <div class="col-md">
+          <label for="filterMaxPrice" class="form-label">Prix maximum</label>
+          <input type="number" id="filterMaxPrice" class="form-control"
+            min="0" step="1" placeholder="Ex : 150">
+        </div>
+
+        <div class="col-md">
+          <label for="filterTheme" class="form-label">Thème</label>
           <select id="filterTheme" class="form-select">
             <option value="">Tous</option>
-            <option value="Noel">Noel</option>
-            <option value="Paques">Paques</option>
-            <option value="Classique">Classique</option>
+            <?php foreach ($themes as $theme): ?>
+              <option value="<?= htmlspecialchars($theme) ?>">
+                <?= htmlspecialchars($theme) ?>
+              </option>
+            <?php endforeach; ?>
           </select>
         </div>
 
-        <div class="col-md-3">
-          <label for="filterDiet" class="form-label">Regime</label>
+        <div class="col-md">
+          <label for="filterDiet" class="form-label">Régime</label>
           <select id="filterDiet" class="form-select">
             <option value="">Tous</option>
             <option value="classique">Classique</option>
-            <option value="vegetarien">Vegetarien</option>
-            <option value="vegan">Vegan</option>
+            <option value="végétarien">Végétarien</option>
+            <option value="végan">Végan</option>
           </select>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md">
           <label for="filterPeople" class="form-label">Nombre de personnes</label>
-          <input type="number" id="filterPeople" class="form-control" placeholder="Ex : 4">
+          <input type="number" id="filterPeople" class="form-control"
+            min="1" placeholder="Ex : 4">
         </div>
       </div>
     </div>
   </div>
-  <div class="row g-4 mt-4">
+  <p id="menuFilterEmpty" class="alert alert-info mt-4" hidden>
+    Aucun menu ne correspond à ces critères.
+  </p>
+  <div class="row g-4 mt-4" id="menuResults">
     <?php foreach ($menus as $menu): ?>
+    <?php
+      $imageUrl = $menu['image_url'] ?? '';
+      if ($imageUrl !== '' && !str_starts_with($imageUrl, 'http')) {
+          $imageUrl = \App\Core\Url::asset($imageUrl);
+      }
+      $imageStyle = $imageUrl !== '' ? "--menu-image: url('" . htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') . "');" : '';
+    ?>
     <div class="col-md-4">
-      <article class="card h-100 menu-card" data-price="<?= (float) $menu['base_price'] ?>" data-theme="<?= htmlspecialchars($menu['theme']) ?>" data-diet="<?= htmlspecialchars($menu['diet']) ?>" data-people="<?= (int) $menu['min_people'] ?>">ticle <div class="card-body">
+      <article class="card h-100 menu-card" data-price="<?= (float) $menu['base_price'] ?>" data-theme="<?= htmlspecialchars($menu['theme']) ?>" data-diet="<?= htmlspecialchars($menu['diet']) ?>" data-people="<?= (int) $menu['min_people'] ?>">
+        <div class="card-body <?= $imageUrl !== '' ? 'menu-card-body-image' : '' ?>" <?= $imageStyle !== '' ? 'style="' . $imageStyle . '"' : '' ?>>
           <h2 class="h4 card-title"><?= htmlspecialchars($menu['title']) ?></h2>
           <p class="card-text"><?= htmlspecialchars($menu['description']) ?></p>
 
-          <p>Theme : <?= htmlspecialchars($menu['theme']) ?></p>
-          <p>Regime : <?= htmlspecialchars($menu['diet']) ?></p>
+          <p>Thème : <?= htmlspecialchars($menu['theme']) ?></p>
+          <p>Régime : <?= htmlspecialchars($menu['diet']) ?></p>
           <p>Minimum : <?= (int) $menu['min_people'] ?> personnes</p>
           <p>Stock : <?= (int) $menu['stock'] ?></p>
 
@@ -70,7 +82,7 @@ $menus = $stmt->fetchAll();
             <?= number_format((float) $menu['base_price'], 2, ',', ' ') ?> €
           </p>
 
-          <a class="btn" href="?page=menu-show&id=<?= (int) $menu['id'] ?>">Voir le detail</a>
+          <a class="btn-app" href="?page=menu-show&id=<?= (int) $menu['id'] ?>">Voir le détail</a>
         </div>
       </article>
     </div>

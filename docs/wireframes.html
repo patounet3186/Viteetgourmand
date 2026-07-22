@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframes - Vite & Gourmand</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      color: #222;
+      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+    h1, h2 { margin: 0 0 20px; }
+    h2 { margin-top: 40px; }
+    .document-cover { margin-bottom: 36px; }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+    .frame {
+      overflow: hidden;
+      border: 2px solid #333;
+      background: #fff;
+      box-shadow: 0 4px 12px #0001;
+    }
+    .desktop { min-height: 430px; }
+    .mobile {
+      width: min(100%, 300px);
+      min-height: 520px;
+      margin-inline: auto;
+    }
+    .label {
+      padding: 8px 12px;
+      border-bottom: 2px solid #333;
+      background: #222;
+      color: #fff;
+      font-weight: bold;
+    }
+    .nav {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      padding: 12px;
+      border-bottom: 1px solid #777;
+    }
+    .mobile .nav span:last-child { font-size: 0; }
+    .mobile .nav span:last-child::after {
+      font-size: 18px;
+      content: "☰";
+    }
+    .box {
+      display: grid;
+      place-items: center;
+      min-height: 64px;
+      margin: 12px;
+      padding: 10px;
+      border: 1px dashed #555;
+      background: #eee;
+      text-align: center;
+    }
+    .hero { min-height: 130px; background: #ccc; }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 12px;
+      padding: 10px;
+      border: 1px solid #555;
+    }
+    .filters span {
+      min-height: 32px;
+      border: 1px solid #999;
+      background: #eee;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 12px;
+    }
+    .card {
+      display: grid;
+      place-items: center;
+      min-height: 150px;
+      border: 1px solid #555;
+      background: #ddd;
+      text-align: center;
+    }
+    .detail {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 12px;
+      margin: 12px;
+    }
+    .image-placeholder,
+    .info-placeholder {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      border: 1px solid #555;
+      background: #ddd;
+      text-align: center;
+    }
+    .info-placeholder { background: #fff; }
+    .button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      border: 2px solid #333;
+      background: #fff;
+    }
+    .footer {
+      margin-top: 12px;
+      padding: 14px;
+      border-top: 1px solid #555;
+      text-align: center;
+    }
+    .mobile .hero { min-height: 180px; }
+    .mobile .filters,
+    .mobile .cards,
+    .mobile .detail {
+      grid-template-columns: 1fr;
+    }
+    .mobile .filters span { min-height: 38px; }
+    .mobile .card { min-height: 125px; }
+    .mobile .detail .image-placeholder { min-height: 190px; }
+    @media (max-width: 1000px) {
+      .board { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { padding: 16px; background: #fff; }
+      .document-cover {
+        display: grid;
+        min-height: 160mm;
+        margin: 0;
+        place-content: center;
+        text-align: center;
+        break-after: page;
+      }
+      h2 { break-after: avoid; }
+      .board { break-inside: auto; }
+      .frame { break-inside: avoid; }
+      .desktop { min-height: 360px; }
+      .mobile { min-height: 460px; }
+      .mobile .detail .image-placeholder,
+      .mobile .detail .info-placeholder {
+        min-height: 115px;
+      }
+      .mobile .card { min-height: 70px; }
+      .mobile .detail,
+      .mobile .cards { gap: 6px; margin: 8px; }
+      .mobile .footer { margin-top: 8px; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="document-cover">
+    <h1>Wireframes Vite & Gourmand</h1>
+    <p>Structure validée pour les trois écrans publics principaux.</p>
+  </header>
+
+  <h2>Format ordinateur</h2>
+  <div class="board">
+    <article class="frame desktop">
+      <div class="label">1. Accueil</div>
+      <div class="nav"><strong>Logo</strong><span>Accueil · Menus · Contact · Compte</span></div>
+      <div class="box hero">Photo héro + proposition de valeur + bouton Menus</div>
+      <div class="box">Présentation du traiteur</div>
+      <div class="cards"><div class="card">Avis</div><div class="card">Avis</div><div class="card">Avis</div></div>
+      <div class="footer">Horaires · Mentions · CGV · Confidentialité</div>
+    </article>
+
+    <article class="frame desktop">
+      <div class="label">2. Liste des menus</div>
+      <div class="nav"><strong>Logo</strong><span>Navigation</span></div>
+      <div class="filters"><span>Prix min.</span><span>Prix max.</span><span>Thème</span><span>Régime</span><span>Personnes</span></div>
+      <div class="cards"><div class="card">Menu 1</div><div class="card">Menu 2</div><div class="card">Menu 3</div></div>
+      <div class="footer">Horaires et informations légales</div>
+    </article>
+
+    <article class="frame desktop">
+      <div class="label">3. Détail et commande</div>
+      <div class="nav"><strong>Logo</strong><span>Navigation</span></div>
+      <div class="detail">
+        <div class="image-placeholder">Galerie photos</div>
+        <div class="info-placeholder">Titre · thème · régime · minimum · prix · conditions<br><span class="button">Commander</span></div>
+      </div>
+      <div class="cards"><div class="card">Entrée</div><div class="card">Plat</div><div class="card">Dessert</div></div>
+      <div class="footer">Horaires et informations légales</div>
+    </article>
+  </div>
+
+  <h2>Format mobile</h2>
+  <div class="board">
+    <article class="frame mobile">
+      <div class="label">1. Accueil mobile</div>
+      <div class="nav"><strong>Logo</strong><span>Navigation</span></div>
+      <div class="box hero">Photo héro<br>Titre<br>Bouton Menus</div>
+      <div class="box">Présentation</div>
+      <div class="cards"><div class="card">Avis clients</div></div>
+      <div class="footer">Horaires · Liens légaux</div>
+    </article>
+
+    <article class="frame mobile">
+      <div class="label">2. Menus mobile</div>
+      <div class="nav"><strong>Logo</strong><span>Navigation</span></div>
+      <div class="filters"><span>Prix min.</span><span>Prix max.</span><span>Thème</span><span>Régime</span><span>Personnes</span></div>
+      <div class="cards"><div class="card">Menu 1</div><div class="card">Menu 2</div></div>
+      <div class="footer">Horaires · Liens légaux</div>
+    </article>
+
+    <article class="frame mobile">
+      <div class="label">3. Détail mobile</div>
+      <div class="nav"><strong>Logo</strong><span>Navigation</span></div>
+      <div class="detail">
+        <div class="image-placeholder">Galerie</div>
+        <div class="info-placeholder">Informations du menu<br><span class="button">Commander</span></div>
+      </div>
+      <div class="cards"><div class="card">Entrée</div><div class="card">Plat</div><div class="card">Dessert</div></div>
+      <div class="footer">Horaires · Liens légaux</div>
+    </article>
+  </div>
+</body>
+</html>

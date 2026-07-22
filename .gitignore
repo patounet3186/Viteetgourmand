@@ -1,7 +1,11 @@
 config/database.php
 .env
-vendor/
+/vendor/
 node_modules/
 *.log
 .DS_Store
 Thumbs.db
+storage/reviews.json
+config/mongodb.php
+/.vscode/
+/tmp/
