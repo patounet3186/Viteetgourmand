@@ -30,6 +30,25 @@ main {
   width: 100%;
 }
 
+main a:not(.btn):not(.btn-app) {
+  color: #7d2424;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p {
+  overflow-wrap: break-word;
+}
+
 .site-header {
   position : sticky;
   top: 0;
@@ -61,6 +80,38 @@ main {
 .nav-link:hover,
 .nav-link:focus-visible {
   background: var(--forest-light);
+}
+
+.nav-logout-form {
+  margin: 0;
+}
+
+.nav-logout-button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 2000;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: #ffffff;
+  color: var(--forest);
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+:focus-visible {
+  outline: 3px solid #0b6bcb;
+  outline-offset: 3px;
 }
 
 .btn-app {
@@ -106,11 +157,81 @@ main {
   text-decoration: none;
 }
 
+.footer-hours {
+  display: grid;
+  gap: 4px;
+  min-width: min(100%, 360px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-hours li {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hours-input {
+  width: 7rem;
+}
+
+.order-price-summary {
+  max-width: 560px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--forest-light);
+}
+
+.order-status-form {
+  min-width: 13rem;
+}
+
+.order-timeline {
+  display: grid;
+  gap: 20px;
+  margin: 24px 0 0;
+  padding-left: 24px;
+  border-left: 2px solid var(--border);
+  list-style: none;
+}
+
+.order-timeline li {
+  position: relative;
+}
+
+.order-timeline li::before {
+  position: absolute;
+  top: 6px;
+  left: -31px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: var(--bordeaux);
+  box-shadow: 0 0 0 1px var(--bordeaux);
+  content: "";
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 360px;
+}
+
 .hero {
   padding: 90px 8%;
   background:
     linear-gradient(rgba(24, 53, 47, 0.72), rgba(24, 53, 47, 0.62)),
-    url("/ECF-2026/public/images/hero-restaurant.webp") center/cover;
+    var(--hero-image) center/cover;
   color: #ffffff;
 }
 
@@ -127,6 +248,22 @@ main {
 
 .section {
   padding: 56px 8%;
+}
+
+.auth-section {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.legal-content {
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.legal-content h2 {
+  margin-top: 32px;
+  font-size: 1.35rem;
 }
 
 .menu-grid {
@@ -160,6 +297,34 @@ main {
 
 .menu-detail-body-image {
   min-height: 520px;
+}
+
+.menu-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.menu-gallery {
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--forest-light);
+}
+
+.menu-gallery-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.menu-detail-content {
+  min-width: 0;
+}
+
+.menu-facts dt,
+.menu-facts dd {
+  padding-block: 4px;
 }
 
 .menu-card-body-image .price,
@@ -258,6 +423,81 @@ main {
 @media (max-width: 900px) {
   .menu-grid {
     grid-template-columns: 1fr;
+  }
+
+  .menu-detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .site-header .navbar {
+    padding: 10px 0;
+  }
+
+  .site-header .navbar > .container {
+    padding-inline: 16px;
+  }
+
+  .navbar-brand {
+    max-width: calc(100% - 64px);
+    font-size: 1.05rem;
+  }
+
+  .hero {
+    padding: 64px 24px;
+  }
+
+  .hero h1 {
+    max-width: 100%;
+    font-size: 2.25rem;
+    line-height: 1.12;
+  }
+
+  .hero p {
+    max-width: 100%;
+    font-size: 1rem;
+  }
+
+  .section {
+    padding: 36px 20px;
+  }
+
+  .menu-grid {
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  .menu-card-body-image {
+    min-height: 390px;
+  }
+
+  .menu-detail-layout {
+    gap: 24px;
+  }
+
+  .menu-gallery-image {
+    aspect-ratio: 1 / 1;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    padding: 28px 20px;
+  }
+
+  .site-footer > div,
+  .footer-links,
+  .footer-hours {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .footer-hours li {
+    gap: 16px;
+  }
+
+  .chart-container {
+    height: 280px;
   }
 }
 

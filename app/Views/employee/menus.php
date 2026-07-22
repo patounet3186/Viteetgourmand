@@ -1,154 +1,138 @@
 <section class="section">
     <h1>Gestion des menus</h1>
-    <p>Consultez et mettez à jour les menus proposés aux clients.</p>
-      <?php if ($menuCreated): ?>
-          <div class="alert alert-success js-auto-hide">
-              Le menu a bien été ajouté.
-          </div>
-      <?php endif; ?>
-      <?php if ($menuUpdated): ?>
-          <div class="alert alert-success js-auto-hide">
-              Le stock et la visibilité du menu ont été mis à jour.
-          </div>
-      <?php endif; ?>
+    <p>Créez les menus et gérez leur composition, leur stock et leur visibilité.</p>
 
-      <?php if (!empty($menuErrors)): ?>
-          <div class="alert alert-danger" role="alert">
-              <ul class="mb-0">
-                  <?php foreach ($menuErrors as $error): ?>
-                      <li><?= htmlspecialchars($error) ?></li>
-                  <?php endforeach; ?>
-              </ul>
-          </div>
-      <?php endif; ?>
+    <?php if ($menuCreated): ?>
+        <div class="alert alert-success js-auto-hide" role="status">
+            Le menu a bien été ajouté.
+        </div>
+    <?php endif; ?>
 
-      <h2 class="h3 mt-5">Ajouter un menu</h2>
+    <?php if ($menuUpdated): ?>
+        <div class="alert alert-success js-auto-hide" role="status">
+            Le menu a bien été mis à jour.
+        </div>
+    <?php endif; ?>
 
-      <form method="post" class="card p-4 mb-4">
-          <input type="hidden" name="action" value="create_menu">
-          <?= csrf_field() ?>
+    <?php if ($menuArchived): ?>
+        <div class="alert alert-success js-auto-hide" role="status">
+            Le menu a été archivé. Les anciennes commandes sont conservées.
+        </div>
+    <?php endif; ?>
 
-          <div class="row g-3">
-              <div class="col-md-6">
-                  <label for="title" class="form-label">Nom du menu</label>
-                  <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($formMenu['title']) ?>" required>
-              </div>
+    <?php if ($menuErrors !== []): ?>
+        <div class="alert alert-danger" role="alert">
+            <ul class="mb-0">
+                <?php foreach ($menuErrors as $error): ?>
+                    <li><?= htmlspecialchars($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 
-              <div class="col-md-6">
-                  <label for="theme" class="form-label">Thème</label>
-                  <input type="text" id="theme" name="theme" class="form-control" value="<?= htmlspecialchars($formMenu['theme']) ?>" required>
-              </div>
+    <h2 class="h3 mt-5">Ajouter un menu</h2>
 
-              <div class="col-md-6">
-                  <label for="diet" class="form-label">Régime</label>
-                  <select id="diet" name="diet" class="form-select" required>
-                      <option value="classique" <?= $formMenu['diet'] === 'classique' ? 'selected' : '' ?>>Classique</option>
-                      <option value="végétarien" <?= $formMenu['diet'] === 'végétarien' ? 'selected' : '' ?>>Végétarien</option>
-                      <option value="végan" <?= $formMenu['diet'] === 'végan' ? 'selected' : '' ?>>Végan</option>
-                  </select>
-              </div>
+    <?php if ($dishes === []): ?>
+        <div class="alert alert-warning">
+            Créez d’abord au moins une entrée, un plat et un dessert dans
+            <a href="?page=employee-dishes">la gestion des plats</a>.
+        </div>
+    <?php else: ?>
+        <form method="post" class="card p-4 mb-5">
+            <input type="hidden" name="action" value="create_menu">
+            <?= csrf_field() ?>
 
-              <div class="col-md-6">
-                  <label for="min_people" class="form-label">Nombre minimum de personnes</label>
-                  <input type="number" id="min_people" name="min_people" min="1" class="form-control" value="<?= htmlspecialchars($formMenu['min_people']) ?>" required>
-              </div>
+            <?php $formIdPrefix = 'create_menu'; ?>
+            <?php require __DIR__ . '/_menu-form-fields.php'; ?>
 
-              <div class="col-md-6">
-                  <label for="base_price" class="form-label">Prix de base</label>
-                  <input type="number" id="base_price" name="base_price" min="0.01" step="0.01" class="form-control" value="<?= htmlspecialchars($formMenu['base_price']) ?>" required>
-              </div>
+            <button type="submit" class="btn btn-primary align-self-start mt-4">
+                Ajouter le menu
+            </button>
+        </form>
+    <?php endif; ?>
 
-              <div class="col-md-6">
-                  <label for="stock" class="form-label">Stock disponible</label>
-                  <input type="number" id="stock" name="stock" min="0" class="form-control" value="<?= htmlspecialchars($formMenu['stock']) ?>" required>
-              </div>
+    <h2 class="h3">Menus enregistrés</h2>
 
-              <div class="col-12">
-                  <label for="description" class="form-label">Description</label>
-                  <textarea id="description" name="description" class="form-control" rows="4" required><?= htmlspecialchars($formMenu['description']) ?></textarea>
-              </div>
+    <?php if ($menus === []): ?>
+        <div class="alert alert-info">Aucun menu n’est enregistré.</div>
+    <?php else: ?>
+        <div class="table-responsive mt-3">
+            <table class="table table-striped align-middle menu-management-table">
+                <caption class="visually-hidden">Liste des menus enregistrés</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Menu</th>
+                        <th scope="col">Thème</th>
+                        <th scope="col">Régime</th>
+                        <th scope="col">Minimum</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Plats</th>
+                        <th scope="col">Stock et visibilité</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($menus as $menu): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($menu['title']) ?></td>
+                            <td><?= htmlspecialchars($menu['theme']) ?></td>
+                            <td><?= htmlspecialchars($menu['diet']) ?></td>
+                            <td><?= (int) $menu['min_people'] ?> personnes</td>
+                            <td><?= number_format((float) $menu['base_price'], 2, ',', ' ') ?> €</td>
+                            <td><?= (int) $menu['dishes_count'] ?></td>
+                            <td>
+                                <form method="post"
+                                    class="d-flex gap-2 align-items-center menu-management-form">
+                                    <input type="hidden" name="action" value="update_menu_state">
+                                    <input type="hidden" name="menu_id"
+                                        value="<?= (int) $menu['id'] ?>">
+                                    <?= csrf_field() ?>
 
-              <div class="col-12">
-                  <label for="conditions_text" class="form-label">Conditions</label>
-                  <textarea id="conditions_text" name="conditions_text" class="form-control" rows="3" required><?= htmlspecialchars($formMenu['conditions_text']) ?></textarea>
-              </div>
+                                    <input type="number" name="stock" min="0"
+                                        class="form-control form-control-sm menu-stock-input"
+                                        value="<?= (int) $menu['stock'] ?>"
+                                        aria-label="Stock de <?= htmlspecialchars($menu['title']) ?>">
 
-              <div class="col-12">
-                  <label for="image_url" class="form-label">Chemin de l’image, facultatif</label>
-                  <input type="text" id="image_url" name="image_url" class="form-control"
-                      value="<?= htmlspecialchars($formMenu['image_url']) ?>"
-                      placeholder="public/images/mon-menu.webp">
-              </div>
-          </div>
-          <div class="form-check mt-3">
-              <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="is_active"
-                  name="is_active"
-                  value="1"
-                  <?= $formMenu['is_active'] === 1? 'checked': '' ?>
-              >
-              <label class="form-check-label" for="is_active">
-                  Rendre ce menu visible aux clients
-              </label>
-          </div>
+                                    <select name="is_active"
+                                        class="form-select form-select-sm menu-status-select"
+                                        aria-label="Visibilité de <?= htmlspecialchars($menu['title']) ?>">
+                                        <option value="1"
+                                            <?= (int) $menu['is_active'] === 1 ? 'selected' : '' ?>>
+                                            Actif
+                                        </option>
+                                        <option value="0"
+                                            <?= (int) $menu['is_active'] === 0 ? 'selected' : '' ?>>
+                                            Inactif
+                                        </option>
+                                    </select>
 
-          <button type="submit" class="btn-app">Ajouter le menu</button>
-      </form>
-      <div class="table-responsive">
-      <table class="table table-striped align-middle">
-        <thead>
-          <tr>
-            <th>Menu</th>
-            <th>Thème</th>
-            <th>Régime</th>
-            <th>Minimum</th>
-            <th>Prix</th>
-            <th>Stock / Visibilité</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($menus as $menu): ?>
-            <tr>
-              <td><?= htmlspecialchars($menu['title']) ?></td>
-              <td><?= htmlspecialchars($menu['theme']) ?></td>
-              <td><?= htmlspecialchars($menu['diet']) ?></td>
-              <td><?= (int) $menu['min_people'] ?> personnes</td>
-              <td><?= number_format((float) $menu['base_price'], 2, ',', ' ') ?> €</td>
-
-              <td>
-                <form method="post" class="d-flex gap-2 align-items-center menu-management-form">
-                    <input type="hidden" name="action" value="update_menu_state">
-                    <input type="hidden" name="menu_id" value="<?= (int) $menu['id'] ?>">
-                    <?= csrf_field() ?>
-
-                    <input
-                        type="number"
-                        name="stock"
-                        min="0"
-                        class="form-control form-control-sm menu-stock-input"
-                        value="<?= (int) $menu['stock'] ?>"
-                        aria-label="Stock"
-                    >
-
-                    <select name="is_active" class="form-select form-select-sm menu-status-select" aria-label="Visibilité">
-                        <option value="1" <?= (int) $menu['is_active'] === 1 ? 'selected' : '' ?>>
-                            Actif
-                        </option>
-                        <option value="0" <?= (int) $menu['is_active'] === 0 ? 'selected' : '' ?>>
-                            Inactif
-                        </option>
-                    </select>
-
-                    <button type="submit" class="btn btn-sm btn-primary text-nowrap">
-                        Mettre à jour
-                    </button>
-                </form>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
+                                    <button type="submit" class="btn btn-sm btn-primary text-nowrap">
+                                        Mettre à jour
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="?page=employee-menu-edit&amp;id=<?= (int) $menu['id'] ?>"
+                                        class="btn btn-sm btn-outline-primary">
+                                        Modifier
+                                    </a>
+                                    <form method="post" class="js-confirm-form"
+                                        data-confirm="Archiver ce menu ? Il ne sera plus commandable.">
+                                        <input type="hidden" name="action" value="archive_menu">
+                                        <input type="hidden" name="menu_id"
+                                            value="<?= (int) $menu['id'] ?>">
+                                        <?= csrf_field() ?>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            Archiver
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
 </section>

@@ -6,26 +6,44 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\Menu;
+use App\Models\Order;
+use App\Models\OrderAnalytics;
 use App\Models\Review;
 use App\Models\User;
+use App\Services\MailService;
+use DateTimeImmutable;
 use PDO;
 
 final class AdminController extends Controller
 {
     private User $users;
     private Menu $menus;
+    private Order $orders;
+    private MailService $mailer;
 
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->users = new User($pdo);
         $this->menus = new Menu($pdo);
+        $this->orders = new Order($pdo);
+        $this->mailer = new MailService();
     }
 
     public function dashboard(): array
     {
         $this->requireRole(['admin']);
-        $reviewModel = new Review();
+        $reviewModel = null;
+        $reviewWarning = null;
+
+        try {
+            $reviewModel = new Review();
+        } catch (\Throwable $exception) {
+            error_log('Avis indisponibles dans l’administration : ' . $exception->getMessage());
+            $reviewWarning =
+                'Le service d’avis est temporairement indisponible. '
+                . 'Les autres fonctions restent accessibles.';
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_action'])) {
             $reviewId = (string) ($_POST['review_id'] ?? '');
@@ -35,13 +53,85 @@ final class AdminController extends Controller
                 $this->redirect('admin-dashboard', ['csrf' => 1]);
             }
 
-            if ($reviewId !== '' && in_array($reviewAction, ['validated', 'refused'], true)) {
-                $reviewModel->updateStatus($reviewId, $reviewAction);
-                $this->redirect('admin-dashboard', ['review_updated' => 1]);
+            if (
+                $reviewModel !== null
+                && $reviewId !== ''
+                && in_array($reviewAction, ['validated', 'refused'], true)
+            ) {
+                try {
+                    $reviewModel->updateStatus($reviewId, $reviewAction);
+                    $this->redirect('admin-dashboard', ['review_updated' => 1]);
+                } catch (\Throwable $exception) {
+                    error_log(
+                        'Modération d’avis indisponible : ' . $exception->getMessage()
+                    );
+                    $reviewWarning =
+                        'Le service d’avis est temporairement indisponible. '
+                        . 'La décision n’a pas été enregistrée.';
+                    $reviewModel = null;
+                }
             }
         }
 
-        $stats = $this->menus->statistics();
+        $menusForFilter = $this->menus->allForManagement();
+        $selectedMenuId = (int) ($_GET['menu_id'] ?? 0);
+        $dateFrom = trim((string) ($_GET['date_from'] ?? ''));
+        $dateTo = trim((string) ($_GET['date_to'] ?? ''));
+        $filterError = null;
+
+        if ($selectedMenuId > 0) {
+            $menuExists = false;
+            foreach ($menusForFilter as $menu) {
+                if ((int) $menu['id'] === $selectedMenuId) {
+                    $menuExists = true;
+                    break;
+                }
+            }
+
+            if (!$menuExists) {
+                $selectedMenuId = 0;
+                $filterError = 'Le menu sélectionné est invalide.';
+            }
+        }
+
+        if ($dateFrom !== '' && !$this->validDate($dateFrom)) {
+            $dateFrom = '';
+            $filterError = 'La date de début est invalide.';
+        }
+
+        if ($dateTo !== '' && !$this->validDate($dateTo)) {
+            $dateTo = '';
+            $filterError = 'La date de fin est invalide.';
+        }
+
+        if ($dateFrom !== '' && $dateTo !== '' && $dateFrom > $dateTo) {
+            $filterError = 'La date de début doit précéder la date de fin.';
+            $dateFrom = '';
+            $dateTo = '';
+        }
+
+        $analyticsSource = 'MongoDB';
+        $analyticsWarning = null;
+
+        try {
+            $analytics = new OrderAnalytics();
+            $analytics->synchronize($this->orders->analyticsRows());
+            $stats = $analytics->statistics(
+                $selectedMenuId > 0 ? $selectedMenuId : null,
+                $dateFrom !== '' ? $dateFrom : null,
+                $dateTo !== '' ? $dateTo : null
+            );
+        } catch (\Throwable) {
+            $analyticsSource = 'MySQL (secours)';
+            $analyticsWarning =
+                'MongoDB est temporairement indisponible. Les statistiques de secours sont affichées.';
+            $stats = $this->menus->statistics(
+                $selectedMenuId > 0 ? $selectedMenuId : null,
+                $dateFrom !== '' ? $dateFrom : null,
+                $dateTo !== '' ? $dateTo : null
+            );
+        }
+
         $totalOrders = 0;
         $totalTurnover = 0.0;
 
@@ -50,8 +140,22 @@ final class AdminController extends Controller
             $totalTurnover += (float) $stat['turnover'];
         }
 
-        $reviews = $reviewModel->all();
-        $pendingReviews = $reviewModel->byStatus('pending');
+        $reviews = [];
+        $pendingReviews = [];
+
+        if ($reviewModel !== null) {
+            try {
+                $reviews = $reviewModel->byStatus('validated');
+                $pendingReviews = $reviewModel->byStatus('pending');
+            } catch (\Throwable $exception) {
+                error_log(
+                    'Lecture des avis indisponible : ' . $exception->getMessage()
+                );
+                $reviewWarning =
+                    'Le service d’avis est temporairement indisponible. '
+                    . 'Les autres fonctions restent accessibles.';
+            }
+        }
         $totalReviews = count($reviews);
         $pendingReviewsCount = count($pendingReviews);
         $ratingSum = 0;
@@ -65,6 +169,14 @@ final class AdminController extends Controller
 
         return $this->render('admin/dashboard', 'Administration', compact(
             'stats',
+            'menusForFilter',
+            'selectedMenuId',
+            'dateFrom',
+            'dateTo',
+            'filterError',
+            'analyticsSource',
+            'analyticsWarning',
+            'reviewWarning',
             'totalOrders',
             'totalTurnover',
             'pendingReviews',
@@ -149,6 +261,10 @@ final class AdminController extends Controller
                     'password_hash' => password_hash($password, PASSWORD_DEFAULT),
                     'is_active' => (int) $employeeForm['is_active'],
                 ]);
+                $this->mailer->employeeAccount(
+                    $employeeForm['email'],
+                    $employeeForm['first_name']
+                );
                 $this->redirect('admin-users', ['employee_created' => 1]);
             }
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_employee_status') {
@@ -183,7 +299,7 @@ final class AdminController extends Controller
             }
         }
 
-        $users = $this->users->all();
+        $users = $this->users->allStaff();
         $userUpdated = isset($_GET['updated']);
         $csrfError = isset($_GET['csrf']);
         $employeeCreated = ($_GET['employee_created'] ?? '') === '1';
@@ -198,5 +314,12 @@ final class AdminController extends Controller
             'csrfError',
             'employeeCreated'
         ));
+    }
+
+    private function validDate(string $value): bool
+    {
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+
+        return $date !== false && $date->format('Y-m-d') === $value;
     }
 }

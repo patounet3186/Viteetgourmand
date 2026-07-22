@@ -1,4 +1,5 @@
 {
+    "license": "proprietary",
     "require": {
         "mongodb/mongodb": "^2.3"
     },
@@ -8,6 +9,12 @@
         }
     },
     "scripts": {
-        "test:mvc": "php tests/mvc_architecture.php"
+        "test:mvc": "php tests/mvc_architecture.php",
+        "test:domain": "php tests/domain_rules.php",
+        "test:integration": "php tests/database_integration.php",
+        "test": [
+            "@test:mvc",
+            "@test:domain"
+        ]
     }
 }

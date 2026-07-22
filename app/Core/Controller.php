@@ -37,10 +37,39 @@ abstract class Controller
     protected function requireUser(): array
     {
         if (!isset($_SESSION['user']) || !is_array($_SESSION['user'])) {
+            $intendedRequest = [];
+
+            foreach ($_GET as $key => $value) {
+                if (is_string($key) && is_scalar($value)) {
+                    $intendedRequest[$key] = (string) $value;
+                }
+            }
+
+            if ($intendedRequest !== []) {
+                $_SESSION['intended_request'] = $intendedRequest;
+            }
+
             $this->redirect('login');
         }
 
-        return $_SESSION['user'];
+        $userId = (int) ($_SESSION['user']['id'] ?? 0);
+        $stmt = $this->pdo->prepare(
+            'SELECT id, first_name, last_name, email, role
+             FROM users
+             WHERE id = :id AND is_active = 1'
+        );
+        $stmt->execute(['id' => $userId]);
+        $activeUser = $stmt->fetch();
+
+        if ($activeUser === false) {
+            session_unset();
+            session_regenerate_id(true);
+            $this->redirect('login');
+        }
+
+        $_SESSION['user'] = $activeUser;
+
+        return $activeUser;
     }
 
     /**

@@ -1,96 +1,117 @@
 # Documentation de gestion de projet
 
-## Méthode retenue
+## Cadre
 
-La gestion de projet est organisée sous forme de backlog simple avec priorisation des fonctionnalités.
+Le projet a été conduit par incréments fonctionnels : une fonctionnalité est
+développée, testée dans le navigateur, relue, puis versionnée avant la suivante.
+Le backlog est priorisé selon le parcours utilisateur et les exigences de l’ECF.
 
-Les fonctionnalités sont développées par branches Git afin de respecter les bonnes pratiques demandées dans le sujet.
+- Dépôt : <https://github.com/patounet3186/Viteetgourmand>
+- Tableau de suivi externe : **lien à renseigner avant le rendu**
+- Branche de finalisation : `feature/menu-dishes-management`
 
-## Branches Git
+## Organisation Git
 
-- `main` : version stable.
-- `develop` : version de développement.
-- `feature/*` : branche par fonctionnalité.
+| Type | Rôle |
+| --- | --- |
+| `main` | version destinée à la production |
+| `develop` | intégration des fonctionnalités validées |
+| `feature/*` | développement isolé d’un domaine |
 
-Exemples :
+Branches utilisées :
 
-```bash
+```text
 feature/auth
-feature/orders
 feature/employee-space
-feature/reviews
+feature/employee-management
+feature/ui-docs-finalization
 feature/menu-dishes-management
 ```
 
-La branche de travail actuelle est :
+Les fichiers de secrets, `vendor/`, `.vscode/` et les fichiers temporaires sont
+exclus par `.gitignore`.
 
-```text
-feature/menu-dishes-management
-```
+## Backlog final
 
-## Backlog prioritaire
+| Epic | Élément | Priorité | État |
+| --- | --- | --- | --- |
+| Socle | Architecture MVC et autoload PSR-4 | Haute | Terminé |
+| Socle | Routage, erreurs 404/500 et URL dynamiques | Haute | Terminé |
+| Catalogue | Liste, détail, galerie et composition | Haute | Terminé |
+| Catalogue | Filtres prix, thème, régime, personnes | Haute | Terminé |
+| Catalogue | CRUD menus et plats, stock, archivage | Haute | Terminé |
+| Comptes | Inscription, connexion, profil et rôles | Haute | Terminé |
+| Comptes | Mot de passe oublié avec jeton expirant | Haute | Terminé |
+| Commandes | Calcul du prix, remise et livraison | Haute | Terminé |
+| Commandes | Création, modification et annulation client | Haute | Terminé |
+| Commandes | Cycle employé et historique horodaté | Haute | Terminé |
+| Commandes | Notifications et e-mails métier | Moyenne | Terminé |
+| Avis | Dépôt et modération dans MongoDB | Haute | Terminé |
+| Administration | Employés, badges et horaires | Haute | Terminé |
+| Administration | Statistiques MongoDB et secours SQL | Haute | Terminé |
+| Conformité | Contact, pages légales et confidentialité | Haute | Terminé |
+| Qualité | CSRF, sessions, contrôles d’accès et XSS | Haute | Terminé |
+| Qualité | Responsive, accessibilité et tests | Haute | Terminé |
+| Livrables | Documentation et maquettes | Haute | Terminé |
+| Livraison | Déploiement et recette de production | Haute | À exécuter |
 
-| Priorité | Fonctionnalité | Statut |
+## Jalons
+
+1. **Socle public** : accueil, menus et base relationnelle.
+2. **Comptes** : inscription, connexion et redirections par rôle.
+3. **Commande** : parcours client et gestion employé.
+4. **Administration** : employés, avis, statistiques et horaires.
+5. **Consolidation MVC** : séparation contrôleurs, modèles et vues.
+6. **Finalisation ECF** : sécurité, responsive, tests et documentation.
+7. **Mise en production** : import SQL, variables, e-mails et recette.
+
+## Définition de terminé
+
+Une tâche est terminée lorsque :
+
+1. le scénario nominal fonctionne dans le navigateur ;
+2. les erreurs de saisie restent compréhensibles ;
+3. les droits visiteur, client, employé et administrateur sont vérifiés ;
+4. les formulaires sensibles possèdent un jeton CSRF ;
+5. les données affichées sont échappées ;
+6. la syntaxe PHP et JavaScript est valide ;
+7. `composer test` passe ;
+8. la documentation touchée est mise à jour.
+
+## Stratégie de test
+
+| Niveau | Outil | Couverture |
 | --- | --- | --- |
-| 1 | Structure PHP et routing simple | Fait |
-| 2 | Liste des menus | Fait |
-| 3 | Détail menu | Fait |
-| 4 | Filtres dynamiques JS | Fait |
-| 5 | Inscription | Fait |
-| 6 | Connexion / déconnexion | Fait |
-| 7 | Commande menu | Fait |
-| 8 | Espace utilisateur | Fait |
-| 9 | Espace employé | Fait |
-| 10 | Espace administrateur | Fait |
-| 11 | Avis clients NoSQL avec MongoDB Atlas | Fait |
-| 12 | Validation/refus des avis | Fait |
-| 13 | Documentation finale | En cours |
-| 14 | Déploiement | À faire |
+| Statique | `php -l`, `node --check` | syntaxe |
+| Architecture | `tests/mvc_architecture.php` | classes, vues et routage |
+| Domaine | `tests/domain_rules.php` | prix, transitions et URL |
+| Intégration | `tests/database_integration.php` | transactions, relations, stock, historique |
+| HTTP | PowerShell + Apache local | codes 200/404 et erreurs PHP |
+| Visuel | Playwright | 3 pages en ordinateur et mobile |
+| Manuel | navigateur | rôles et scénarios métier |
 
-## Règles de validation
+## Risques suivis
 
-Avant chaque merge :
+| Risque | Réponse |
+| --- | --- |
+| Secret publié dans Git | fichiers réels ignorés, modèles d’exemple fournis |
+| MongoDB indisponible | message clair et statistiques de secours SQL |
+| Échec e-mail | journalisation sans perte de la commande |
+| Double commande du dernier stock | transaction et verrou `FOR UPDATE` |
+| Accès d’un client au back-office | contrôle serveur `requireRole` |
+| Annulation employé sans contact | méthode et motif obligatoires |
+| Dépendance à un CDN | Bootstrap et Chart.js conservés localement |
+| Mise à jour d’une ancienne base | migration additive séparée |
 
-1. Tester la fonctionnalité dans le navigateur.
-2. Vérifier la syntaxe PHP :
+## Historique significatif
 
-```bash
-C:/xampp/php/php.exe -l chemin/du/fichier.php
-```
+Les commits du dépôt montrent l’évolution incrémentale, notamment :
 
-3. Vérifier qu'aucun secret n'est suivi par Git :
+- `Add optimized WebP images` ;
+- `Add CSRF protection and admin acces management` ;
+- `Ajoute la modification du profil client` ;
+- `Ajoute la gestion des employés et les redirections par rôle` ;
+- `refactor: structurer l'application selon le modèle MVC`.
 
-```bash
-git status --ignored
-```
-
-4. Faire un commit clair.
-5. Pousser la branche sur GitHub.
-
-## Commits récents
-
-Dernière évolution technique validée :
-
-```text
-Refactorisation du projet vers une architecture MVC
-```
-
-Cette évolution ajoute :
-
-- un contrôleur frontal dans `public/index.php` ;
-- des contrôleurs par domaine dans `app/Controllers` ;
-- des modèles MySQL et MongoDB dans `app/Models` ;
-- un autoload PSR-4 avec Composer ;
-- des vues limitées à l'affichage ;
-- une gestion commune des redirections et des erreurs HTTP.
-
-## Outil de suivi
-
-Un tableau de suivi peut être tenu dans :
-
-- GitHub Projects ;
-- Trello ;
-- Notion ;
-- Jira.
-
-Pour le rendu final, ajouter ici le lien vers l'outil choisi.
+Le lot final doit faire l’objet d’un commit dédié après recette, puis être fusionné
+vers `develop` et `main` selon le flux retenu.

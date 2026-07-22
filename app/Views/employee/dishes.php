@@ -14,6 +14,12 @@
   </div>
 <?php endif; ?>
 
+<?php if ($dishDeleted): ?>
+  <div class="alert alert-success js-auto-hide" role="status">
+    Le plat a bien été supprimé des menus.
+  </div>
+<?php endif; ?>
+
 <?php if (!empty($dishErrors)): ?>
   <div class="alert alert-danger" role="alert">
     <ul class="mb-0">
@@ -107,6 +113,7 @@
             <th scope="col">Catégorie</th>
             <th scope="col">Description</th>
             <th scope="col">Allergènes</th>
+            <th scope="col">Menus</th>
             <th scope="col">Gestion</th>
           </tr>
         </thead>
@@ -124,13 +131,25 @@
               <td class="table-cell-wrap">
                 <?= htmlspecialchars($dish['allergens'] ?: 'Aucun allergène renseigné') ?>
               </td>
+              <td><?= (int) $dish['menus_count'] ?></td>
               <td>
-                <a
-                  href="?page=employee-dish-edit&id=<?= (int) $dish['id'] ?>"
-                  class="btn btn-sm btn-primary"
-                >
-                  Modifier
-                </a>
+                <div class="d-flex gap-2">
+                  <a
+                    href="?page=employee-dish-edit&id=<?= (int) $dish['id'] ?>"
+                    class="btn btn-sm btn-primary"
+                  >
+                    Modifier
+                  </a>
+                  <form method="post" class="d-inline js-confirm-form"
+                    data-confirm="Supprimer ce plat et le retirer de tous les menus ?">
+                    <input type="hidden" name="action" value="delete_dish">
+                    <input type="hidden" name="dish_id" value="<?= (int) $dish['id'] ?>">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      Supprimer
+                    </button>
+                  </form>
+                </div>
               </td>
             </tr>
           <?php endforeach; ?>

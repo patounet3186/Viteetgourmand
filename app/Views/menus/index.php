@@ -1,4 +1,11 @@
 <section class="section">
+  <?php
+  $themes = array_values(array_unique(array_map(
+      static fn (array $menu): string => (string) $menu['theme'],
+      $menus
+  )));
+  sort($themes);
+  ?>
   <h1>Nos menus</h1>
   <p>Découvrez les menus proposés par Vite & Gourmand.</p>
   <div class="card mt-4">
@@ -6,22 +13,31 @@
       <h2 class="h5">Filtrer les menus</h2>
 
       <div class="row g-3">
-        <div class="col-md-3">
-          <label for="filterMaxPrice" class="form-label">Prix maximum</label>
-          <input type="number" id="filterMaxPrice" class="form-control" placeholder="Ex : 150">
+        <div class="col-md">
+          <label for="filterMinPrice" class="form-label">Prix minimum</label>
+          <input type="number" id="filterMinPrice" class="form-control"
+            min="0" step="1" placeholder="Ex : 40">
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md">
+          <label for="filterMaxPrice" class="form-label">Prix maximum</label>
+          <input type="number" id="filterMaxPrice" class="form-control"
+            min="0" step="1" placeholder="Ex : 150">
+        </div>
+
+        <div class="col-md">
           <label for="filterTheme" class="form-label">Thème</label>
           <select id="filterTheme" class="form-select">
             <option value="">Tous</option>
-            <option value="Noël">Noël</option>
-            <option value="Pâques">Pâques</option>
-            <option value="Classique">Classique</option>
+            <?php foreach ($themes as $theme): ?>
+              <option value="<?= htmlspecialchars($theme) ?>">
+                <?= htmlspecialchars($theme) ?>
+              </option>
+            <?php endforeach; ?>
           </select>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md">
           <label for="filterDiet" class="form-label">Régime</label>
           <select id="filterDiet" class="form-select">
             <option value="">Tous</option>
@@ -31,19 +47,23 @@
           </select>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md">
           <label for="filterPeople" class="form-label">Nombre de personnes</label>
-          <input type="number" id="filterPeople" class="form-control" placeholder="Ex : 4">
+          <input type="number" id="filterPeople" class="form-control"
+            min="1" placeholder="Ex : 4">
         </div>
       </div>
     </div>
   </div>
-  <div class="row g-4 mt-4">
+  <p id="menuFilterEmpty" class="alert alert-info mt-4" hidden>
+    Aucun menu ne correspond à ces critères.
+  </p>
+  <div class="row g-4 mt-4" id="menuResults">
     <?php foreach ($menus as $menu): ?>
     <?php
       $imageUrl = $menu['image_url'] ?? '';
       if ($imageUrl !== '' && !str_starts_with($imageUrl, 'http')) {
-          $imageUrl = '/ECF-2026/' . ltrim($imageUrl, '/');
+          $imageUrl = \App\Core\Url::asset($imageUrl);
       }
       $imageStyle = $imageUrl !== '' ? "--menu-image: url('" . htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') . "');" : '';
     ?>

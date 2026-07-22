@@ -20,6 +20,19 @@ final class User extends Model
         return $user === false ? null : $user;
     }
 
+    public function findActiveForPasswordReset(string $email): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, first_name, email
+             FROM users
+             WHERE email = :email AND is_active = 1'
+        );
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch();
+
+        return $user === false ? null : $user;
+    }
+
     public function emailExists(string $email, ?int $excludedUserId = null): bool
     {
         if ($excludedUserId === null) {
@@ -117,11 +130,12 @@ final class User extends Model
         return $stmt->rowCount() > 0;
     }
 
-    public function all(): array
+    public function allStaff(): array
     {
         return $this->pdo->query(
             'SELECT id, role, first_name, last_name, email, is_active, created_at
              FROM users
+             WHERE role IN (\'employee\', \'admin\')
              ORDER BY created_at DESC'
         )->fetchAll();
     }

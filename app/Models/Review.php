@@ -31,6 +31,11 @@ final class Review
         return $this->findMany(['status' => $status]);
     }
 
+    public function countByStatus(string $status): int
+    {
+        return $this->collection->countDocuments(['status' => $status]);
+    }
+
     public function findByOrderId(int $orderId): ?array
     {
         $review = $this->collection->findOne(

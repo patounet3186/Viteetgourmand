@@ -9,16 +9,29 @@ final class Dish extends Model
     public function all(): array
     {
         return $this->pdo->query(
-            "SELECT id, name, category, description, allergens
+            "SELECT
+                dishes.id,
+                dishes.name,
+                dishes.category,
+                dishes.description,
+                dishes.allergens,
+                COUNT(menu_dishes.menu_id) AS menus_count
              FROM dishes
+             LEFT JOIN menu_dishes ON menu_dishes.dish_id = dishes.id
+             GROUP BY
+                dishes.id,
+                dishes.name,
+                dishes.category,
+                dishes.description,
+                dishes.allergens
              ORDER BY
-                CASE category
+                CASE dishes.category
                     WHEN 'entree' THEN 1
                     WHEN 'plat' THEN 2
                     WHEN 'dessert' THEN 3
                     ELSE 4
                 END,
-                name"
+                dishes.name"
         )->fetchAll();
     }
 
@@ -84,5 +97,34 @@ final class Dish extends Model
              WHERE id = :id'
         );
         $stmt->execute([...$data, 'id' => $dishId]);
+    }
+
+    /** @param list<int> $dishIds */
+    public function existingIds(array $dishIds): array
+    {
+        $dishIds = array_values(array_unique(array_filter(
+            $dishIds,
+            static fn (int $dishId): bool => $dishId > 0
+        )));
+
+        if ($dishIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($dishIds), '?'));
+        $stmt = $this->pdo->prepare(
+            "SELECT id FROM dishes WHERE id IN ({$placeholders})"
+        );
+        $stmt->execute($dishIds);
+
+        return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
+    }
+
+    public function delete(int $dishId): bool
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM dishes WHERE id = :id');
+        $stmt->execute(['id' => $dishId]);
+
+        return $stmt->rowCount() > 0;
     }
 }

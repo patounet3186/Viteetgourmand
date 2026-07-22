@@ -1,7 +1,8 @@
 <section class="section">
     <h1>Gestion des accès employés</h1>
     <p class="text-muted">
-        Cette page affiche uniquement les informations nécessaires à la gestion des rôles et des accès.
+        Seuls les comptes internes nécessaires à la gestion des accès sont
+        affichés sur cette page.
     </p>
     <?php if ($userUpdated): ?>
         <div class="alert alert-success js-auto-hide">Utilisateur mis à jour.</div>

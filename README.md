@@ -1,311 +1,259 @@
 # Vite & Gourmand - ECF 2026
 
-Application web réalisée dans le cadre de l'ECF du titre professionnel Développeur Web et Web Mobile.
+Application web responsive réalisée pour l’ECF du titre professionnel
+Développeur Web et Web Mobile. Vite & Gourmand est un traiteur fictif situé à
+Bordeaux qui présente ses menus, prend des commandes et organise leur suivi.
 
-Le projet répond au besoin de l'entreprise fictive **Vite & Gourmand**, traiteur à Bordeaux, qui souhaite présenter ses menus en ligne, permettre aux utilisateurs de commander et gérer les avis clients.
+- Dépôt public : <https://github.com/patounet3186/Viteetgourmand>
+- URL de production : **à renseigner après le déploiement**
+- Tableau de gestion de projet : **à renseigner avant le rendu**
 
-## Fonctionnalités implémentées
+## Fonctionnalités
 
-- Page d'accueil
-- Liste des menus depuis une base MySQL/MariaDB
-- Filtres dynamiques sur les menus sans rechargement de page
-- Détail d'un menu
-- Inscription utilisateur
-- Connexion / déconnexion
-- Affichage conditionnel de la navigation selon la session et le rôle
-- Commande d'un menu par un utilisateur connecté
-- Espace utilisateur avec suivi des commandes
-- Dépôt d'avis après livraison d'une commande
-- Stockage des avis clients dans MongoDB Atlas
-- Espace employé pour consulter les commandes et modifier les statuts
-- Tableau de bord administrateur
-- Statistiques de commandes
-- Validation ou refus des avis clients
+### Visiteur
 
-## Stack technique
+- consulter l’accueil, les horaires et les avis validés ;
+- filtrer les menus par prix minimum/maximum, thème, régime et personnes ;
+- consulter la galerie, la composition, les allergènes et les conditions ;
+- créer un compte, se connecter et réinitialiser son mot de passe ;
+- envoyer une demande depuis le formulaire de contact ;
+- consulter les mentions légales, les CGV et la confidentialité.
 
-- Front-end : HTML5, CSS3, Bootstrap 5, JavaScript
-- Back-end : PHP 8 avec PDO
-- Architecture : MVC avec contrôleur frontal et autoload PSR-4
-- Dépendances PHP : Composer
-- Base relationnelle : MySQL/MariaDB
-- Base non relationnelle : MongoDB Atlas
-- Serveur local : XAMPP / Apache
-- Hébergement cible : alwaysdata ou équivalent compatible PHP/MySQL
+### Client
 
-## Architecture MVC
+- modifier ses informations personnelles ;
+- commander un menu disponible avec coordonnées préremplies ;
+- voir le prix du menu, la remise de 10 %, la livraison et le total en direct ;
+- modifier ou annuler une commande tant qu’elle est au statut `nouvelle` ;
+- consulter le détail et l’historique horodaté de chaque commande ;
+- recevoir des notifications lors des changements de statut ;
+- déposer une note et un commentaire après la fin de la prestation.
 
-- `app/Models/` contient les accès MySQL et MongoDB.
-- `app/Controllers/` contient les validations, autorisations et traitements HTTP.
-- `app/Views/` contient les gabarits d'affichage.
-- `app/Core/` contient le contrôleur de base et la gestion des erreurs HTTP.
-- `public/index.php` associe chaque valeur de `page` à une action de contrôleur.
+### Employé
+
+- gérer les menus, leur composition, leur galerie, leur stock et leur visibilité ;
+- créer, modifier et supprimer un plat inutilisé ;
+- consulter et filtrer les commandes par statut ou client ;
+- faire progresser une commande selon le cycle métier ;
+- annuler après avoir indiqué le moyen de contact et le motif ;
+- gérer les horaires d’ouverture ;
+- valider ou refuser les avis.
+
+### Administrateur
+
+- utiliser toutes les fonctions employé ;
+- créer et activer/désactiver les comptes employés ;
+- consulter le nombre de commandes et le chiffre d’affaires par menu ;
+- filtrer les statistiques par menu et période ;
+- utiliser MongoDB pour l’agrégation, avec un secours SQL si MongoDB est absent.
+
+## Technologies
+
+- PHP 8.2, PDO et architecture MVC ;
+- Composer et autoload PSR-4 ;
+- HTML5, CSS3, JavaScript et Bootstrap 5.3.3 local ;
+- Chart.js 4.4.9 local ;
+- MySQL/MariaDB pour les données métier ;
+- MongoDB Atlas pour les avis et les données statistiques ;
+- Apache/XAMPP en local et alwaysdata comme cible d’hébergement.
+
+Les licences des bibliothèques front-end sont conservées dans
+`public/vendor/`.
+
+## Architecture
+
+```text
+app/
+  Controllers/   validations, autorisations et réponses HTTP
+  Core/          contrôleur commun, URL, environnement, erreurs HTTP
+  Models/        accès PDO et MongoDB
+  Services/      calcul tarifaire, CSRF et e-mails
+  Views/         vues PHP et gabarit principal
+config/          connexions locales ignorées par Git
+database/        schéma complet et migration additive
+docs/            livrables de l’ECF
+public/          contrôleur frontal, CSS, JavaScript, images, bibliothèques
+tests/           contrôles d’architecture, domaine et intégration
+```
+
+`public/index.php` est le contrôleur frontal. Il associe la valeur du paramètre
+`page` à une méthode de contrôleur. Les contrôleurs appellent les modèles et
+transmettent uniquement les données nécessaires aux vues.
 
 ## Installation locale
 
 ### 1. Prérequis
 
-- PHP 8.2 ou plus
-- XAMPP avec Apache activé
-- Accès à une base MySQL/MariaDB
-- Composer
-- Extension PHP `mongodb`
-- Compte MongoDB Atlas
-- Git
+- PHP 8.2 ou supérieur ;
+- Apache et MySQL/MariaDB, par exemple avec XAMPP ;
+- Composer ;
+- extension PHP `mongodb` 2.3 ou compatible ;
+- compte MongoDB Atlas ;
+- Git.
 
-Sur Windows avec XAMPP, l'extension MongoDB doit être copiée dans :
+Sous XAMPP, placer `php_mongodb.dll` dans `C:\xampp\php\ext`, ajouter
+`extension=php_mongodb.dll` dans `php.ini`, puis redémarrer Apache.
 
-```text
-C:\xampp\php\ext
-```
-
-Puis activée dans :
-
-```text
-C:\xampp\php\php.ini
-```
-
-Avec la ligne :
-
-```ini
-extension=php_mongodb.dll
-```
-
-Après modification, redémarrer Apache.
-
-### 2. Cloner le dépôt
-
-Depuis le dossier `htdocs` de XAMPP :
+### 2. Cloner et installer
 
 ```bash
 cd /c/xampp/htdocs
 git clone https://github.com/patounet3186/Viteetgourmand.git ECF-2026
 cd ECF-2026
-```
-
-Si le projet est déjà présent en local :
-
-```bash
-cd /c/xampp/htdocs/ECF-2026
-git pull
-```
-
-### 3. Installer les dépendances PHP
-
-```bash
 composer install
 ```
 
-La dépendance principale utilisée pour MongoDB est :
+### 3. Configurer MySQL/MariaDB
 
-```text
-mongodb/mongodb
-```
+Copier `config/database.example.php` vers `config/database.php`, puis saisir
+les identifiants locaux. Le fichier réel est ignoré par Git.
 
-Le dossier `vendor/` est ignoré par Git et doit être recréé avec Composer.
+Pour une installation vide :
 
-### 4. Configurer la base relationnelle MySQL/MariaDB
+1. créer et sélectionner une base dans phpMyAdmin ;
+2. importer `database/schema.sql`.
 
-Copier le fichier d'exemple :
+Pour mettre à jour une installation antérieure du projet :
 
-```bash
-cp config/database.example.php config/database.php
-```
+1. faire une sauvegarde de la base ;
+2. sélectionner la base ;
+3. importer `database/migrations/20260718_complete_ecf.sql` une seule fois.
 
-Puis modifier `config/database.php` avec les informations de connexion locales ou alwaysdata :
+La migration ajoute les galeries, l’historique des statuts, les notifications,
+les jetons de mot de passe et les horaires sans supprimer les données existantes.
 
-```php
-$host = 'localhost';
-$dbname = 'vite_et_gourmand';
-$username = 'votre_utilisateur';
-$password = 'votre_mot_de_passe';
-```
+### 4. Configurer MongoDB
 
-Le fichier `config/database.php` est ignoré par Git afin de ne pas publier les identifiants.
-
-### 5. Importer la base SQL
-
-Le fichier SQL principal est disponible ici :
-
-```text
-database/schema.sql
-```
-
-Dans phpMyAdmin :
-
-1. Sélectionner la base de données.
-2. Aller dans l'onglet `Importer`.
-3. Importer `database/schema.sql`.
-4. Vérifier que les tables suivantes sont créées :
-   - `users`
-   - `menus`
-   - `dishes`
-   - `menu_dishes`
-   - `orders`
-   - `reviews`
-
-La table `reviews` est conservée dans le schéma SQL, mais la fonctionnalité active des avis clients utilise MongoDB Atlas.
-
-### 6. Configurer MongoDB Atlas
-
-Créer le fichier local :
-
-```text
-config/mongodb.php
-```
-
-Avec la structure suivante :
+Copier `config/mongodb.example.php` vers `config/mongodb.php`, puis renseigner :
 
 ```php
-<?php
-
 return [
-    'uri' => 'mongodb+srv://UTILISATEUR:MOT_DE_PASSE@CLUSTER.mongodb.net/?retryWrites=true&w=majority',
+    'uri' => 'mongodb+srv://UTILISATEUR:MOT_DE_PASSE@cluster.mongodb.net/',
     'database' => 'vite_et_gourmand',
     'collection' => 'reviews',
+    'analytics_collection' => 'order_analytics',
 ];
 ```
 
-Le fichier `config/mongodb.php` est ignoré par Git.
+Dans MongoDB Atlas, l’utilisateur doit avoir le droit `readWrite` et l’adresse
+IP du serveur doit être autorisée. Le fichier réel est ignoré par Git.
 
-Dans MongoDB Atlas, vérifier :
+Exécuter ensuite une fois `php database/apply_mongodb_indexes.php` ou le script
+`database/mongodb-indexes.js` dans `mongosh` pour garantir un seul avis et une
+seule projection par commande.
 
-1. Un utilisateur de base de données existe dans `Database Access`.
-2. L'utilisateur possède les droits `readWrite`.
-3. L'adresse IP locale est autorisée dans `Network Access`.
-4. La chaîne de connexion est correctement renseignée dans `config/mongodb.php`.
+### 5. Configurer l’environnement
 
-### 7. Lancer l'application
+Copier `.env.example` vers `.env` :
 
-Démarrer Apache dans XAMPP, puis ouvrir :
+```dotenv
+APP_ENV=development
+APP_URL=http://localhost/ECF-2026/public
+MAIL_FROM=no-reply@vite-et-gourmand.fr
+COMPANY_EMAIL=contact@vite-et-gourmand.fr
+COMPANY_LEGAL_NAME="Vite & Gourmand"
+COMPANY_ADDRESS="Bordeaux, France"
+COMPANY_SIRET=
+```
+
+Le chargeur n’écrase pas les variables déjà définies par Apache ou alwaysdata.
+En production, utiliser `APP_ENV=production` et une URL HTTPS.
+
+L’envoi repose sur `mail()`. Le serveur doit donc disposer d’un transport e-mail
+configuré. Un échec est journalisé sans interrompre la commande.
+
+### 6. Lancer
+
+Démarrer Apache, puis ouvrir :
 
 ```text
 http://localhost/ECF-2026/public/
 ```
 
+La racine web de production doit idéalement pointer vers le dossier `public/`.
+
+## Premier administrateur
+
+1. Créer un compte client depuis l’interface.
+2. Pour l’amorçage uniquement, modifier son rôle en `admin` dans la base.
+3. Se reconnecter.
+4. Créer ensuite les employés depuis `Administration > Accès`.
+
+L’application ne permet pas de créer un autre administrateur depuis le front.
+
 ## Routes principales
 
-| Page | URL |
+| Fonction | Route |
 | --- | --- |
 | Accueil | `?page=home` |
-| Liste des menus | `?page=menus` |
-| Détail d'un menu | `?page=menu-show&id=1` |
-| Inscription | `?page=register` |
-| Connexion | `?page=login` |
-| Espace utilisateur | `?page=account` |
-| Commande | `?page=order-create&menu_id=1` |
-| Dépôt d'avis | `?page=review-create&order_id=1` |
-| Gestion employé des commandes | `?page=employee-orders` |
-| Gestion employé des menus | `?page=employee-menus` |
-| Gestion employé des plats | `?page=employee-dishes` |
-| Modification d'un plat | `?page=employee-dish-edit&id=1` |
-| Tableau de bord administrateur | `?page=admin-dashboard` |
-| Gestion des accès employés | `?page=admin-users` |
-| Contact | `?page=contact` |
-| Déconnexion | `?page=logout` |
+| Menus et filtres | `?page=menus` |
+| Détail menu | `?page=menu-show&id=1` |
+| Inscription / connexion | `?page=register`, `?page=login` |
+| Mot de passe oublié | `?page=forgot-password` |
+| Espace client | `?page=account` |
+| Détail / modification commande | `?page=order-show&id=1`, `?page=order-edit&id=1` |
+| Commandes employé | `?page=employee-orders` |
+| Menus / plats / horaires | `?page=employee-menus`, `employee-dishes`, `employee-hours` |
+| Modération des avis | `?page=employee-reviews` |
+| Statistiques admin | `?page=admin-dashboard` |
+| Comptes employés | `?page=admin-users` |
+| Pages légales | `?page=legal-notice`, `terms`, `privacy` |
 
-## Identifiants de test
+## Tests
 
-Les comptes de démonstration sont créés depuis l'interface d'inscription.
-
-Pour tester les rôles :
-
-1. Créer un compte client depuis l'inscription.
-2. Pour amorcer l'environnement local, attribuer le rôle `admin` à un compte de test depuis la base.
-3. Se connecter avec ce compte administrateur.
-4. Aller sur `?page=admin-users` pour créer les comptes employés et gérer leur état.
-5. Vérifier qu'un client ne peut pas accéder aux espaces employé ou administrateur.
-
-Ne jamais indiquer de vrais mots de passe personnels dans ce fichier.
-
-## Gestion Git
-
-Organisation demandée pour l'ECF :
-
-- `main` : branche principale stable
-- `develop` : branche d'intégration
-- `feature/*` : branches de fonctionnalités
-
-Exemples :
+Tests rapides, sans écriture en base :
 
 ```bash
-git switch develop
-git switch -c feature/auth
-git switch -c feature/orders
-git switch -c feature/reviews
+composer test
 ```
 
-Avant chaque commit :
+Test d’intégration optionnel sur la base configurée :
 
 ```bash
-composer test:mvc
-C:\xampp\php\php.exe -l public/index.php
-git status
+composer test:integration
 ```
 
-Après validation :
+Ce dernier crée des données marquées `example.test`, vérifie menu, composition,
+prix, commande, stock et historique, puis les supprime dans tous les cas.
+
+Contrôles complémentaires :
 
 ```bash
-git add .
-git commit -m "Message du commit"
-git push
+composer validate --no-check-publish
+C:/xampp/php/php.exe -l public/index.php
+node --check public/js/app.js
+node --check public/js/menu-filters.js
 ```
 
-## Livrables ECF
+## Sécurité et accessibilité
 
-Les livrables sont préparés dans le dépôt :
+- mots de passe hachés avec `password_hash` ;
+- jetons CSRF sur les actions sensibles ;
+- requêtes PDO préparées ;
+- échappement HTML des données affichées ;
+- limitation de cinq échecs de connexion pendant quinze minutes ;
+- jetons de réinitialisation hachés, expirables et à usage unique ;
+- sessions `HttpOnly`, `SameSite=Lax` et `Secure` sous HTTPS ;
+- autorisations contrôlées côté serveur pour chaque rôle ;
+- en-têtes de sécurité et erreurs détaillées masquées en production ;
+- politique CSP et HSTS lorsque la connexion utilise HTTPS ;
+- lien d’évitement, structure sémantique, labels et focus visible ;
+- interface responsive contrôlée à 1440 × 1000 et 390 × 844.
 
-- Code source public : dépôt GitHub
-- Fichier SQL : `database/schema.sql`
-- Manuel utilisateur : `docs/manuel-utilisation.md`
-- Charte graphique : `docs/charte-graphique.md`
-- Documentation gestion projet : `docs/gestion-projet.md`
-- Documentation technique : `docs/documentation-technique.md`
+## Livrables
 
-Les fichiers Markdown du dossier `docs/` pourront être exportés en PDF avant le rendu final.
+- SQL : `database/schema.sql` et `database/migrations/` ;
+- manuel : `docs/manuel-utilisation.md` ;
+- charte : `docs/charte-graphique.md` ;
+- gestion de projet : `docs/gestion-projet.md` ;
+- documentation projet : `docs/documentation-projet.md` ;
+- documentation technique : `docs/documentation-technique.md` ;
+- déploiement : `docs/deploiement.md` ;
+- maquettes et wireframes : `docs/maquettes.md` ;
+- synthèse d’étude : `docs/synthese-revision.md`.
 
-## Sécurité
+Les neuf exports prêts à remettre sont regroupés dans `docs/pdf/`.
 
-Mesures déjà présentes :
-
-- Jeton CSRF sur les formulaires sensibles
-- Mots de passe hachés avec `password_hash`
-- Vérification de mot de passe avec `password_verify`
-- Requêtes SQL préparées avec PDO
-- Protection XSS avec `htmlspecialchars`
-- Régénération de session après connexion
-- Configuration sensible ignorée par Git
-- Séparation des données relationnelles et NoSQL
-- Contrôle d'accès par rôle pour les espaces employé et administrateur
-
-Mesures à compléter :
-
-- Validation plus complète des données
-- Limitation des tentatives de connexion
-- Reset de mot de passe
-- Emails automatiques
-- Journalisation des statuts de commande
-
-## État du projet
-
-Le projet est en cours de développement sur la branche `feature/menu-dishes-management`.
-
-Éléments finalisés ou avancés :
-
-1. Authentification utilisateur.
-2. Affichage des menus.
-3. Commande de menus.
-4. Suivi des commandes côté utilisateur.
-5. Gestion des commandes côté employé.
-6. Tableau de bord administrateur.
-7. Avis clients stockés dans MongoDB Atlas.
-8. Validation ou refus des avis par l'administrateur.
-9. Création et activation des comptes employés par l'administrateur.
-10. Création et modification des plats par l'employé ou l'administrateur.
-11. Refactorisation du projet selon le modèle MVC.
-
-Prochaines étapes prioritaires :
-
-1. Compléter les documents du dossier `docs/`.
-2. Tester le déploiement alwaysdata.
-3. Exporter les documents finaux en PDF.
+Avant le dépôt final, il reste à renseigner les informations externes impossibles
+à déduire du code : URL de production, lien du tableau de projet et identité
+légale définitive de l’éditeur.

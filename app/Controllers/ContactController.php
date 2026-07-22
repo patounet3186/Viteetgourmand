@@ -6,16 +6,19 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\ContactMessage;
+use App\Services\MailService;
 use PDO;
 
 final class ContactController extends Controller
 {
     private ContactMessage $messages;
+    private MailService $mailer;
 
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->messages = new ContactMessage($pdo);
+        $this->mailer = new MailService();
     }
 
     public function index(): array
@@ -58,6 +61,12 @@ final class ContactController extends Controller
 
             if (empty($errors)) {
                 $this->messages->create($form);
+                $this->mailer->contactRequest(
+                    $form['full_name'],
+                    $form['email'],
+                    $form['subject'],
+                    $form['message']
+                );
                 $this->redirect('contact', ['sent' => 1]);
             }
         }

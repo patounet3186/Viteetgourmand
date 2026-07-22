@@ -11,8 +11,13 @@ final class HomeController extends Controller
 {
     public function index(): array
     {
-        $reviewModel = new Review();
-        $reviews = array_slice($reviewModel->byStatus('validated'), 0, 3);
+        try {
+            $reviewModel = new Review();
+            $reviews = array_slice($reviewModel->byStatus('validated'), 0, 3);
+        } catch (\Throwable $exception) {
+            error_log('Avis indisponibles sur l’accueil : ' . $exception->getMessage());
+            $reviews = [];
+        }
 
         return $this->render('pages/home', 'Accueil', compact('reviews'));
     }

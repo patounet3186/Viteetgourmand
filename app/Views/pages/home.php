@@ -1,4 +1,9 @@
-<section class="hero">
+<section class="hero"
+  style="--hero-image: url('<?= htmlspecialchars(
+      \App\Core\Url::asset('images/hero-restaurant.webp'),
+      ENT_QUOTES,
+      'UTF-8'
+  ) ?>')">
   <div>
     <h1>Des menus traiteur pour vos moments importants</h1>
     <p>

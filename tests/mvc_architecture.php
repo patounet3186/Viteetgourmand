@@ -9,21 +9,31 @@ $failures = [];
 
 $classes = [
     App\Core\Controller::class,
+    App\Core\Environment::class,
     App\Core\HttpException::class,
+    App\Core\Url::class,
     App\Controllers\AdminController::class,
     App\Controllers\AuthController::class,
     App\Controllers\ContactController::class,
     App\Controllers\DishController::class,
     App\Controllers\HomeController::class,
+    App\Controllers\HoursController::class,
     App\Controllers\MenuController::class,
     App\Controllers\OrderController::class,
+    App\Controllers\PageController::class,
     App\Controllers\ReviewController::class,
     App\Models\ContactMessage::class,
+    App\Models\BusinessHour::class,
     App\Models\Dish::class,
     App\Models\Menu::class,
+    App\Models\Notification::class,
     App\Models\Order::class,
+    App\Models\OrderAnalytics::class,
+    App\Models\PasswordResetToken::class,
     App\Models\Review::class,
     App\Models\User::class,
+    App\Services\MailService::class,
+    App\Services\OrderPricing::class,
 ];
 
 foreach ($classes as $class) {

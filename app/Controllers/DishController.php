@@ -52,12 +52,27 @@ final class DishController extends Controller
                 $this->dishes->create($formDish);
                 $this->redirect('employee-dishes', ['created' => 1]);
             }
+        } elseif (
+            $_SERVER['REQUEST_METHOD'] === 'POST'
+            && ($_POST['action'] ?? '') === 'delete_dish'
+        ) {
+            $dishId = (int) ($_POST['dish_id'] ?? 0);
+
+            if (!\csrf_is_valid($_POST['csrf_token'] ?? null)) {
+                $dishErrors[] = 'Le formulaire a expiré, merci de réessayer.';
+            } elseif ($dishId <= 0 || $this->dishes->find($dishId) === null) {
+                $dishErrors[] = 'Le plat sélectionné est introuvable.';
+            } else {
+                $this->dishes->delete($dishId);
+                $this->redirect('employee-dishes', ['deleted' => 1]);
+            }
         }
 
         $dishes = $this->dishes->all();
         $categoryLabels = self::categoryLabels();
         $dishCreated = ($_GET['created'] ?? '') === '1';
         $dishUpdated = ($_GET['updated'] ?? '') === '1';
+        $dishDeleted = ($_GET['deleted'] ?? '') === '1';
 
         return $this->render('employee/dishes', 'Gestion des plats', compact(
             'dishErrors',
@@ -65,7 +80,8 @@ final class DishController extends Controller
             'dishes',
             'categoryLabels',
             'dishCreated',
-            'dishUpdated'
+            'dishUpdated',
+            'dishDeleted'
         ));
     }
 
