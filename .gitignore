@@ -9,3 +9,7 @@ storage/reviews.json
 config/mongodb.php
 /.vscode/
 /tmp/
+__pycache__/
+*.py[cod]
+/docs/word-work/
+/docs/*.docx

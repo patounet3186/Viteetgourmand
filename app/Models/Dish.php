@@ -120,10 +120,31 @@ final class Dish extends Model
         return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
     }
 
-    public function delete(int $dishId): bool
+    public function usageCount(int $dishId): int
     {
-        $stmt = $this->pdo->prepare('DELETE FROM dishes WHERE id = :id');
-        $stmt->execute(['id' => $dishId]);
+        $stmt = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM menu_dishes WHERE dish_id = :dish_id'
+        );
+        $stmt->execute(['dish_id' => $dishId]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function deleteUnused(int $dishId): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'DELETE FROM dishes
+             WHERE id = :id
+               AND NOT EXISTS (
+                   SELECT 1
+                   FROM menu_dishes
+                   WHERE menu_dishes.dish_id = :linked_dish_id
+               )'
+        );
+        $stmt->execute([
+            'id' => $dishId,
+            'linked_dish_id' => $dishId,
+        ]);
 
         return $stmt->rowCount() > 0;
     }

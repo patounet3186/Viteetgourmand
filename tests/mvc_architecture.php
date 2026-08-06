@@ -33,7 +33,13 @@ $classes = [
     App\Models\Review::class,
     App\Models\User::class,
     App\Services\MailService::class,
+    App\Services\DishManagementService::class,
+    App\Services\MenuFilterService::class,
+    App\Services\MenuManagementService::class,
     App\Services\OrderPricing::class,
+    App\Services\OrderWorkflowService::class,
+    App\Services\PasswordPolicy::class,
+    App\Services\UserRegistrationService::class,
 ];
 
 foreach ($classes as $class) {

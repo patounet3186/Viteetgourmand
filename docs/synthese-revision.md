@@ -60,12 +60,16 @@ du navigateur.
 
 1. refuse un utilisateur déjà connecté ;
 2. récupère et nettoie les valeurs POST ;
-3. valide nom, e-mail, mot de passe et consentements ;
-4. vérifie l’unicité de l’e-mail ;
-5. appelle `User::create()` avec un mot de passe haché ;
-6. affiche la confirmation.
+3. transmet les coordonnées, le mot de passe et les consentements à
+   `UserRegistrationService` ;
+4. le service valide les coordonnées obligatoires et l’unicité de l’e-mail ;
+5. il appelle `User::createCustomer()` avec un mot de passe haché ;
+6. il prépare l’e-mail de bienvenue ;
+7. le contrôleur affiche la confirmation.
 
 Le rôle créé par l’inscription est toujours `user`.
+`PasswordPolicy` applique partout la même règle : 10 à 72 caractères avec une
+majuscule, une minuscule, un chiffre et un caractère spécial.
 
 ### Connexion
 
@@ -130,13 +134,13 @@ pas supprimé : stock à zéro et visibilité inactive.
 
 ## 7. Calcul d’une commande
 
-Exemple : menu à 120 € pour 4 personnes, commandé pour 9 personnes hors Bordeaux.
+Exemple : menu à 120 € pour 4 personnes, commandé pour 9 personnes à 8 km de Bordeaux.
 
 ```text
 prix menu = 120 × (9 / 4) = 270 €
 remise = 270 × 10 % = 27 €
-livraison = 5 €
-total = 270 - 27 + 5 = 248 €
+livraison = 5 + (8 × 0,59) = 9,72 €
+total = 270 - 27 + 9,72 = 252,72 €
 ```
 
 Pourquoi calculer en JavaScript **et** en PHP ?
@@ -258,6 +262,7 @@ aucune donnée.
 
 `MailService` prépare les messages pour :
 
+- bienvenue après inscription ;
 - confirmation de commande ;
 - changement de statut ;
 - compte employé ;
@@ -272,8 +277,9 @@ validée en base.
 
 ## 15. JavaScript
 
-`menu-filters.js` lit les attributs `data-price`, `data-theme`, `data-diet` et
-`data-people` des cartes. Il ne contacte pas le serveur.
+`menu-filters.js` envoie les critères à `?page=api-menus` avec `fetch`. Le
+serveur renvoie les identifiants autorisés et le script met à jour les cartes
+sans recharger la page.
 
 `app.js` :
 

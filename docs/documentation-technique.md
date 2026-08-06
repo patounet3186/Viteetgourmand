@@ -63,7 +63,13 @@ Les vues n’exécutent pas de requête et n’appliquent pas de règle métier.
 
 | Service | Rôle |
 | --- | --- |
+| `DishManagementService` | validation des plats et suppression protégée |
+| `MenuManagementService` | validation, composition et gestion des menus |
+| `MenuFilterService` | normalisation et recherche asynchrone des menus |
 | `OrderPricing` | calcul déterministe du prix |
+| `OrderWorkflowService` | transitions, notifications et e-mails de statut |
+| `PasswordPolicy` | règle commune de robustesse des mots de passe |
+| `UserRegistrationService` | validation et création d’un client |
 | `MailService` | contenu et envoi des e-mails |
 | `csrf.php` | création du champ et validation du jeton |
 | `Environment` | chargement structuré du fichier `.env` |
@@ -93,7 +99,7 @@ navigation n’est jamais considéré comme une protection.
 ```mermaid
 erDiagram
     USERS ||--o{ ORDERS : passe
-    USERS ||--o{ ORDER_STATUS_HISTORY : effectue
+    USERS o|--o{ ORDER_STATUS_HISTORY : effectue
     USERS ||--o{ NOTIFICATIONS : recoit
     USERS ||--o{ PASSWORD_RESET_TOKENS : demande
     MENUS ||--o{ ORDERS : concerne
@@ -101,6 +107,7 @@ erDiagram
     MENUS ||--o{ MENU_DISHES : compose
     DISHES ||--o{ MENU_DISHES : appartient
     ORDERS ||--o{ ORDER_STATUS_HISTORY : historise
+    ORDERS o|--o{ NOTIFICATIONS : concerne
 
     USERS {
         int id PK
@@ -108,6 +115,10 @@ erDiagram
         string first_name
         string last_name
         string email UK
+        string phone
+        string address
+        string postal_code
+        string city
         string password_hash
         boolean is_active
         datetime created_at
@@ -147,7 +158,13 @@ erDiagram
         int menu_id FK
         date event_date
         time event_time
+        string delivery_address
+        string delivery_city
+        decimal delivery_distance_km
         int people_count
+        decimal menu_price
+        decimal delivery_price
+        decimal discount_amount
         decimal total_price
         enum status
         text cancellation_reason
@@ -166,7 +183,9 @@ erDiagram
         int order_id FK
         string type
         string message
-        datetime read_at
+        string target_page
+        boolean is_read
+        datetime created_at
     }
     PASSWORD_RESET_TOKENS {
         int id PK
@@ -177,14 +196,62 @@ erDiagram
     }
 ```
 
-Tables complémentaires :
+### Collection active et tables indépendantes
 
-- `business_hours` : plages d’ouverture par jour ;
-- `contact_messages` : demandes envoyées depuis le site ;
+```mermaid
+erDiagram
+    USERS ||--o{ REVIEWS_MONGO : redige
+    ORDERS ||--o| REVIEWS_MONGO : recoit
+    MENUS ||--o{ REVIEWS_MONGO : evalue
+
+    USERS {
+        int id PK
+    }
+    ORDERS {
+        int id PK
+    }
+    MENUS {
+        int id PK
+    }
+    REVIEWS_MONGO {
+        string id PK
+        int user_id
+        int order_id UK
+        int menu_id
+        int rating
+        string status
+        datetime created_at
+    }
+    CONTACT_MESSAGES {
+        int id PK
+        string full_name
+        string email
+        string subject
+        text message
+        boolean is_read
+        datetime created_at
+    }
+    BUSINESS_HOURS {
+        int day_of_week PK
+        string day_label
+        time first_open
+        time first_close
+        time second_open
+        time second_close
+        boolean is_closed
+    }
+```
+
+`CONTACT_MESSAGES` et `BUSINESS_HOURS` n’ont pas de relation avec une autre
+table. `REVIEWS_MONGO` représente la collection active : ses identifiants SQL
+sont des références applicatives et non des clés étrangères MongoDB.
+
+Table complémentaire historique :
+
 - `reviews` SQL : table historique non utilisée par la fonctionnalité active.
 
-Le schéma complet est dans `database/schema.sql`. La migration additive pour une
-ancienne installation est dans `database/migrations/20260718_complete_ecf.sql`.
+Le schéma complet est dans `database/schema.sql`. Les migrations additives pour
+une ancienne installation sont regroupées dans `database/migrations/`.
 
 ## 5. Données NoSQL
 
@@ -231,7 +298,7 @@ Pour un menu de minimum `M`, de prix de base `P`, commandé pour `N` personnes :
 ```text
 prix_menu = P × (N / M)
 remise = 10 % du prix_menu si N >= M + 5
-livraison = 0 € à Bordeaux, sinon 5 €
+livraison = 0 € à Bordeaux, sinon 5 € + (distance_km × 0,59 €)
 total = prix_menu - remise + livraison
 ```
 
@@ -277,7 +344,7 @@ indiquer un moyen de contact et un motif pour annuler.
 
 ### Menus
 
-- titre de 2 à 150 caractères ;
+- titre de 3 à 150 caractères ;
 - description et conditions obligatoires ;
 - minimum et stock entiers positifs ;
 - prix positif ;
@@ -374,6 +441,8 @@ sequenceDiagram
 
 Les jetons de mot de passe sont générés par `random_bytes`, stockés uniquement
 sous forme de hachage SHA-256 et invalidés après utilisation.
+`PasswordPolicy` impose de 10 à 72 caractères avec majuscule, minuscule,
+chiffre et caractère spécial avant tout nouveau hachage.
 
 ## 11. Résilience
 
@@ -391,7 +460,8 @@ Bootstrap fournit la grille, les formulaires, alertes et composants accessibles.
 
 JavaScript reste progressif :
 
-- `menu-filters.js` filtre les cartes à partir d’attributs `data-*` ;
+- `menu-filters.js` interroge `?page=api-menus` avec `fetch`, puis affiche les
+  cartes correspondantes sans rechargement ;
 - `app.js` masque les confirmations, confirme les actions risquées, gère les
   horaires, l’annulation employé et l’aperçu du prix.
 
@@ -401,27 +471,25 @@ Le serveur n’accorde jamais sa confiance au calcul ou au filtrage du navigateu
 
 ```bash
 composer test
+composer test:all
 composer test:integration
 composer validate --no-check-publish
 ```
 
 - `mvc_architecture.php` contrôle classes, routes et vues ;
-- `domain_rules.php` contrôle prix, transitions et URL ;
+- `domain_rules.php` contrôle prix, validations, transitions et URL ;
+- `security_accessibility.php` contrôle CSRF, labels, champs et images ;
 - `database_integration.php` contrôle les transactions sur données temporaires.
 
-La recette HTTP vérifie les pages publiques, les routes par rôle, la page 404 et
+La recette HTTP vérifie les pages publiques, les accès par rôle, la page 404 et
 l’absence d’avertissement PHP. Les captures Playwright couvrent accueil, menus
-et détail en `1440 × 1000` et `390 × 844`.
+et détail sur ordinateur (`1440 × 1000`) et mobile (`390 × 844`).
 
 ## 14. Configuration et déploiement
 
-Voir [`deploiement.md`](deploiement.md). Les secrets attendus sont :
-
-- `config/database.php` ;
-- `config/mongodb.php` ;
-- éventuellement `.env` ou les variables serveur équivalentes.
-
-Ils ne doivent jamais être commités.
+Voir [`deploiement.md`](deploiement.md). Les secrets sont placés dans
+`config/database.php`, `config/mongodb.php` et, si nécessaire, `.env` ou les
+variables serveur équivalentes. Ces fichiers ne doivent jamais être commités.
 
 ## 15. Limites connues
 

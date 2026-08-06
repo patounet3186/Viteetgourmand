@@ -12,8 +12,9 @@
     <p>
         Le prix dépend du menu et du nombre de personnes. Une réduction de 10 %
         est appliquée lorsque la commande dépasse d’au moins cinq personnes le
-        minimum du menu. La livraison est offerte à Bordeaux et facturée 5 €
-        dans les autres communes.
+        minimum du menu. La livraison est offerte à Bordeaux. Dans les autres
+        communes, elle est facturée 5 € auxquels s’ajoutent 0,59 € par
+        kilomètre depuis Bordeaux.
     </p>
 
     <h2>Livraison et conservation</h2>

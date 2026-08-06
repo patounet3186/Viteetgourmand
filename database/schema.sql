@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS menu_dishes (
     dish_id INT NOT NULL,
     PRIMARY KEY (menu_id, dish_id),
     FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE,
-    FOREIGN KEY (dish_id) REFERENCES dishes(id) ON DELETE CASCADE
+    FOREIGN KEY (dish_id) REFERENCES dishes(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS orders (
     event_time TIME NOT NULL,
     delivery_address VARCHAR(255) NOT NULL,
     delivery_city VARCHAR(100) NOT NULL,
+    delivery_distance_km DECIMAL(8,2) NOT NULL DEFAULT 0,
     people_count INT NOT NULL,
     menu_price DECIMAL(10,2) NOT NULL,
     delivery_price DECIMAL(10,2) NOT NULL DEFAULT 0,

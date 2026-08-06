@@ -2,13 +2,14 @@
 
 function getDatabase(): PDO
 {
-    $host = 'mysql-votrecompte.alwaysdata.net';
-    $dbname = 'votrecompte_viteetgourmand';
-    $username = 'votre_utilisateur';
-    $password = 'votre_mot_de_passe';
+    $host = getenv('DB_HOST') ?: '127.0.0.1';
+    $port = getenv('DB_PORT') ?: '3306';
+    $dbname = getenv('DB_NAME') ?: 'vite_et_gourmand';
+    $username = getenv('DB_USER') ?: 'root';
+    $password = getenv('DB_PASSWORD') ?: '';
 
     return new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4",
         $username,
         $password,
         [

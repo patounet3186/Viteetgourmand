@@ -6,28 +6,27 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\Dish;
+use App\Services\DishManagementService;
+use DomainException;
+use InvalidArgumentException;
 use PDO;
 
 final class DishController extends Controller
 {
-    private const CATEGORIES = ['entree', 'plat', 'dessert'];
-
     private Dish $dishes;
+    private DishManagementService $management;
 
     public function __construct(PDO $pdo)
     {
         parent::__construct($pdo);
         $this->dishes = new Dish($pdo);
+        $this->management = new DishManagementService($this->dishes);
     }
 
     /** @return array<string, string> */
     public static function categoryLabels(): array
     {
-        return [
-            'entree' => 'Entrée',
-            'plat' => 'Plat',
-            'dessert' => 'Dessert',
-        ];
+        return DishManagementService::categoryLabels();
     }
 
     public function index(): array
@@ -35,21 +34,21 @@ final class DishController extends Controller
         $this->requireRole(['employee', 'admin']);
 
         $dishErrors = [];
-        $formDish = $this->emptyForm();
+        $formDish = DishManagementService::emptyForm();
 
         if (
             $_SERVER['REQUEST_METHOD'] === 'POST'
             && ($_POST['action'] ?? '') === 'create_dish'
         ) {
-            $formDish = $this->dishInput();
-            $dishErrors = $this->validateDish($formDish);
+            $formDish = DishManagementService::normalize($_POST);
+            $dishErrors = DishManagementService::validate($formDish);
 
             if (!\csrf_is_valid($_POST['csrf_token'] ?? null)) {
                 array_unshift($dishErrors, 'Le formulaire a expiré, merci de réessayer.');
             }
 
             if (empty($dishErrors)) {
-                $this->dishes->create($formDish);
+                $this->management->create($formDish);
                 $this->redirect('employee-dishes', ['created' => 1]);
             }
         } elseif (
@@ -60,11 +59,13 @@ final class DishController extends Controller
 
             if (!\csrf_is_valid($_POST['csrf_token'] ?? null)) {
                 $dishErrors[] = 'Le formulaire a expiré, merci de réessayer.';
-            } elseif ($dishId <= 0 || $this->dishes->find($dishId) === null) {
-                $dishErrors[] = 'Le plat sélectionné est introuvable.';
             } else {
-                $this->dishes->delete($dishId);
-                $this->redirect('employee-dishes', ['deleted' => 1]);
+                try {
+                    $this->management->delete($dishId);
+                    $this->redirect('employee-dishes', ['deleted' => 1]);
+                } catch (InvalidArgumentException | DomainException $exception) {
+                    $dishErrors[] = $exception->getMessage();
+                }
             }
         }
 
@@ -97,26 +98,21 @@ final class DishController extends Controller
         }
 
         $editErrors = [];
-        $formDish = [
-            'name' => (string) $dish['name'],
-            'category' => (string) $dish['category'],
-            'description' => (string) ($dish['description'] ?? ''),
-            'allergens' => (string) ($dish['allergens'] ?? ''),
-        ];
+        $formDish = DishManagementService::fromRecord($dish);
 
         if (
             $_SERVER['REQUEST_METHOD'] === 'POST'
             && ($_POST['action'] ?? '') === 'update_dish'
         ) {
-            $formDish = $this->dishInput();
-            $editErrors = $this->validateDish($formDish);
+            $formDish = DishManagementService::normalize($_POST);
+            $editErrors = DishManagementService::validate($formDish);
 
             if (!\csrf_is_valid($_POST['csrf_token'] ?? null)) {
                 array_unshift($editErrors, 'Le formulaire a expiré, merci de réessayer.');
             }
 
             if (empty($editErrors)) {
-                $this->dishes->update($dishId, $formDish);
+                $this->management->update($dishId, $formDish);
                 $this->redirect('employee-dishes', ['updated' => 1]);
             }
         }
@@ -129,52 +125,4 @@ final class DishController extends Controller
         ));
     }
 
-    /** @return array<string, string> */
-    private function emptyForm(): array
-    {
-        return [
-            'name' => '',
-            'category' => 'entree',
-            'description' => '',
-            'allergens' => '',
-        ];
-    }
-
-    /** @return array<string, string> */
-    private function dishInput(): array
-    {
-        return [
-            'name' => trim((string) ($_POST['name'] ?? '')),
-            'category' => (string) ($_POST['category'] ?? ''),
-            'description' => trim((string) ($_POST['description'] ?? '')),
-            'allergens' => trim((string) ($_POST['allergens'] ?? '')),
-        ];
-    }
-
-    /**
-     * @param array<string, string> $dish
-     * @return list<string>
-     */
-    private function validateDish(array $dish): array
-    {
-        $errors = [];
-
-        if (mb_strlen($dish['name']) < 2 || mb_strlen($dish['name']) > 150) {
-            $errors[] = 'Le nom doit contenir entre 2 et 150 caractères.';
-        }
-
-        if (!in_array($dish['category'], self::CATEGORIES, true)) {
-            $errors[] = 'La catégorie sélectionnée est invalide.';
-        }
-
-        if (mb_strlen($dish['description']) < 10 || mb_strlen($dish['description']) > 1000) {
-            $errors[] = 'La description doit contenir entre 10 et 1 000 caractères.';
-        }
-
-        if (mb_strlen($dish['allergens']) > 255) {
-            $errors[] = 'La liste des allergènes ne doit pas dépasser 255 caractères.';
-        }
-
-        return $errors;
-    }
 }

@@ -42,41 +42,42 @@
                 <input type="tel" id="register_phone" name="phone"
                     class="form-control" autocomplete="tel"
                     maxlength="30"
-                    value="<?= htmlspecialchars($form['phone']) ?>">
+                    value="<?= htmlspecialchars($form['phone']) ?>" required>
             </div>
 
             <div class="col-md-12">
                 <label for="register_address" class="form-label">Adresse</label>
                 <input type="text" id="register_address" name="address"
                     class="form-control" autocomplete="street-address"
-                    maxlength="255"
-                    value="<?= htmlspecialchars($form['address']) ?>">
+                    minlength="5" maxlength="255"
+                    value="<?= htmlspecialchars($form['address']) ?>" required>
             </div>
 
             <div class="col-md-4">
                 <label for="register_postal_code" class="form-label">Code postal</label>
                 <input type="text" id="register_postal_code" name="postal_code"
                     class="form-control" autocomplete="postal-code"
-                    maxlength="20"
-                    value="<?= htmlspecialchars($form['postal_code']) ?>">
+                    minlength="3" maxlength="20"
+                    value="<?= htmlspecialchars($form['postal_code']) ?>" required>
             </div>
 
             <div class="col-md-8">
                 <label for="register_city" class="form-label">Ville</label>
                 <input type="text" id="register_city" name="city"
                     class="form-control" autocomplete="address-level2"
-                    maxlength="100"
-                    value="<?= htmlspecialchars($form['city']) ?>">
+                    minlength="2" maxlength="100"
+                    value="<?= htmlspecialchars($form['city']) ?>" required>
             </div>
 
             <div class="col-md-12">
                 <label for="register_password" class="form-label">Mot de passe</label>
                 <input type="password" id="register_password" name="password"
                     class="form-control" autocomplete="new-password"
+                    minlength="10" maxlength="72"
                     aria-describedby="password_help" required>
                 <div id="password_help" class="form-text">
-                    10 caractères minimum avec majuscule, minuscule, chiffre
-                    et caractère spécial.
+                    10 à 72 caractères avec majuscule, minuscule, chiffre et
+                    caractère spécial.
                 </div>
             </div>
 

@@ -41,28 +41,50 @@ document.querySelectorAll('.js-order-form').forEach((form) => {
   const summary = form.querySelector('.order-price-summary');
   const peopleInput = form.querySelector('.js-order-people');
   const cityInput = form.querySelector('.js-order-city');
+  const distanceInput = form.querySelector('.js-order-distance');
 
-  if (!summary || !peopleInput || !cityInput) {
+  if (!summary || !peopleInput || !cityInput || !distanceInput) {
     return;
   }
+
+  const showPendingPrice = () => {
+    summary.querySelectorAll(
+      '.js-menu-price, .js-delivery-price, .js-discount, .js-total-price',
+    ).forEach((element) => {
+      element.textContent = 'À calculer';
+    });
+  };
 
   const calculatePrice = () => {
     const basePrice = Number(summary.dataset.basePrice);
     const minimum = Number(summary.dataset.minPeople);
     const people = Number(peopleInput.value);
+    const distance = Number(distanceInput.value);
     const normalizedCity = cityInput.value
       .trim()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
 
-    if (!people || people < minimum || normalizedCity === '') {
+    const isBordeaux = normalizedCity === 'bordeaux';
+    distanceInput.readOnly = isBordeaux;
+    if (isBordeaux && distanceInput.value !== '0') {
+      distanceInput.value = '0';
+    }
+
+    if (
+      !people
+      || people < minimum
+      || normalizedCity === ''
+      || (!isBordeaux && distance <= 0)
+    ) {
+      showPendingPrice();
       return;
     }
 
     const menuPrice = basePrice * (people / minimum);
     const discount = people >= minimum + 5 ? menuPrice * 0.1 : 0;
-    const delivery = normalizedCity === 'bordeaux' ? 0 : 5;
+    const delivery = isBordeaux ? 0 : 5 + distance * 0.59;
     const total = menuPrice + delivery - discount;
 
     summary.querySelector('.js-menu-price').textContent =
@@ -77,6 +99,7 @@ document.querySelectorAll('.js-order-form').forEach((form) => {
 
   peopleInput.addEventListener('input', calculatePrice);
   cityInput.addEventListener('input', calculatePrice);
+  distanceInput.addEventListener('input', calculatePrice);
   calculatePrice();
 });
 

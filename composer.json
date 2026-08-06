@@ -11,10 +11,16 @@
     "scripts": {
         "test:mvc": "php tests/mvc_architecture.php",
         "test:domain": "php tests/domain_rules.php",
+        "test:security": "php tests/security_accessibility.php",
         "test:integration": "php tests/database_integration.php",
+        "test:all": [
+            "@test",
+            "@test:integration"
+        ],
         "test": [
             "@test:mvc",
-            "@test:domain"
+            "@test:domain",
+            "@test:security"
         ]
     }
 }

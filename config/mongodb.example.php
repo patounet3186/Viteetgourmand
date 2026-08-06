@@ -1,8 +1,10 @@
 <?php
 
 return [
-    'uri' => 'mongodb+srv://UTILISATEUR:MOT_DE_PASSE@cluster.mongodb.net/',
-    'database' => 'vite_et_gourmand',
-    'collection' => 'reviews',
-    'analytics_collection' => 'order_analytics',
+    'uri' => getenv('MONGODB_URI')
+        ?: 'mongodb+srv://UTILISATEUR:MOT_DE_PASSE@cluster.mongodb.net/',
+    'database' => getenv('MONGODB_DATABASE') ?: 'vite_et_gourmand',
+    'collection' => getenv('MONGODB_REVIEWS_COLLECTION') ?: 'reviews',
+    'analytics_collection' => getenv('MONGODB_ANALYTICS_COLLECTION')
+        ?: 'order_analytics',
 ];

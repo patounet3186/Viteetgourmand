@@ -33,6 +33,16 @@ abstract class Controller
         exit;
     }
 
+    /** @param array<string, mixed> $data */
+    protected function json(array $data, int $statusCode = 200): never
+    {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=UTF-8');
+        header('Cache-Control: no-store');
+        echo json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     /** @return array<string, mixed> */
     protected function requireUser(): array
     {

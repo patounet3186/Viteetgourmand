@@ -64,6 +64,7 @@ $page = (string) ($_GET['page'] ?? 'home');
 $routes = [
     'home' => [HomeController::class, 'index'],
     'menus' => [MenuController::class, 'index'],
+    'api-menus' => [MenuController::class, 'filter'],
     'menu-show' => [MenuController::class, 'show'],
     'register' => [AuthController::class, 'register'],
     'login' => [AuthController::class, 'login'],

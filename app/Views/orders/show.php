@@ -40,6 +40,11 @@
                         <?= htmlspecialchars($order['delivery_address']) ?>,
                         <?= htmlspecialchars($order['delivery_city']) ?>
                     </dd>
+
+                    <dt class="col-sm-5">Distance depuis Bordeaux</dt>
+                    <dd class="col-sm-7">
+                        <?= number_format((float) $order['delivery_distance_km'], 1, ',', ' ') ?> km
+                    </dd>
                     <dt class="col-sm-5">Personnes</dt>
                     <dd class="col-sm-7"><?= (int) $order['people_count'] ?></dd>
                     <dt class="col-sm-5">Statut</dt>

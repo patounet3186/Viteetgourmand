@@ -31,11 +31,13 @@ final class Order extends Model
             $stmt = $this->pdo->prepare(
                 'INSERT INTO orders
                     (user_id, menu_id, event_date, event_time, delivery_address,
-                     delivery_city, people_count, menu_price, delivery_price,
+                     delivery_city, delivery_distance_km, people_count,
+                     menu_price, delivery_price,
                      discount_amount, total_price)
                  VALUES
                     (:user_id, :menu_id, :event_date, :event_time, :delivery_address,
-                     :delivery_city, :people_count, :menu_price, :delivery_price,
+                     :delivery_city, :delivery_distance_km, :people_count,
+                     :menu_price, :delivery_price,
                      :discount_amount, :total_price)'
             );
             $stmt->execute($data);
@@ -233,6 +235,7 @@ final class Order extends Model
                      event_time = :event_time,
                      delivery_address = :delivery_address,
                      delivery_city = :delivery_city,
+                     delivery_distance_km = :delivery_distance_km,
                      people_count = :people_count,
                      menu_price = :menu_price,
                      delivery_price = :delivery_price,

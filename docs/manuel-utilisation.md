@@ -8,7 +8,7 @@ En local :
 http://localhost/ECF-2026/public/
 ```
 
-En production : **URL à renseigner après le déploiement**.
+En production : <https://arkflo.alwaysdata.net>.
 
 L’interface adapte la navigation au rôle connecté. Les nombres rouges ou jaunes
 signalent les nouvelles commandes, les changements de statut ou les avis à
@@ -61,15 +61,16 @@ La demande est enregistrée en base et transmise à l’adresse de l’entrepris
 2. Ouvrir un menu disponible puis `Commander ce menu`.
 3. Vérifier les coordonnées préremplies.
 4. Choisir une date future, une heure, une adresse, une ville et le nombre de personnes.
-5. Consulter le détail du prix calculé en direct.
-6. Confirmer.
+5. Indiquer la distance depuis Bordeaux, ou `0` pour une livraison à Bordeaux.
+6. Consulter le détail du prix calculé en direct.
+7. Confirmer.
 
 Règles de prix :
 
 - prix proportionnel au minimum du menu ;
 - remise de 10 % à partir de cinq personnes au-dessus du minimum ;
 - livraison gratuite à Bordeaux ;
-- livraison à 5 € dans les autres communes.
+- livraison à 5 € plus 0,59 € par kilomètre dans les autres communes.
 
 Une confirmation est préparée par e-mail. Le stock du menu diminue dans la même
 transaction que l’enregistrement de la commande.
@@ -87,7 +88,7 @@ L’ouverture du détail marque les notifications correspondantes comme lues.
 
 Ces actions sont possibles uniquement tant que la commande est `Nouvelle`.
 
-- `Modifier` permet de changer date, heure, adresse, ville et personnes.
+- `Modifier` permet de changer date, heure, adresse, ville, distance et personnes.
 - Dans le détail, `Annuler la commande` restaure automatiquement le stock.
 
 Le menu choisi ne peut pas être remplacé : il faut annuler puis recommander.

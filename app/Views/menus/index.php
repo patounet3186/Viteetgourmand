@@ -55,10 +55,12 @@
       </div>
     </div>
   </div>
-  <p id="menuFilterEmpty" class="alert alert-info mt-4" hidden>
+  <p id="menuFilterStatus" class="visually-hidden" role="status" aria-live="polite"></p>
+  <p id="menuFilterError" class="alert alert-danger mt-4" role="alert" hidden></p>
+  <p id="menuFilterEmpty" class="alert alert-info mt-4" role="status" hidden>
     Aucun menu ne correspond à ces critères.
   </p>
-  <div class="row g-4 mt-4" id="menuResults">
+  <div class="row g-4 mt-4" id="menuResults" aria-busy="false">
     <?php foreach ($menus as $menu): ?>
     <?php
       $imageUrl = $menu['image_url'] ?? '';
@@ -67,7 +69,7 @@
       }
       $imageStyle = $imageUrl !== '' ? "--menu-image: url('" . htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') . "');" : '';
     ?>
-    <div class="col-md-4">
+    <div class="col-md-4" data-menu-result="<?= (int) $menu['id'] ?>">
       <article class="card h-100 menu-card" data-price="<?= (float) $menu['base_price'] ?>" data-theme="<?= htmlspecialchars($menu['theme']) ?>" data-diet="<?= htmlspecialchars($menu['diet']) ?>" data-people="<?= (int) $menu['min_people'] ?>">
         <div class="card-body <?= $imageUrl !== '' ? 'menu-card-body-image' : '' ?>" <?= $imageStyle !== '' ? 'style="' . $imageStyle . '"' : '' ?>>
           <h2 class="h4 card-title"><?= htmlspecialchars($menu['title']) ?></h2>

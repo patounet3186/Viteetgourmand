@@ -7,8 +7,8 @@ développée, testée dans le navigateur, relue, puis versionnée avant la suiva
 Le backlog est priorisé selon le parcours utilisateur et les exigences de l’ECF.
 
 - Dépôt : <https://github.com/patounet3186/Viteetgourmand>
-- Tableau de suivi externe : **lien à renseigner avant le rendu**
-- Branche de finalisation : `feature/menu-dishes-management`
+- Tableau de suivi externe : <https://github.com/users/patounet3186/projects/4>
+- Branche de correction : `feature/ecf-evaluation-corrections`
 
 ## Organisation Git
 
@@ -26,6 +26,7 @@ feature/employee-space
 feature/employee-management
 feature/ui-docs-finalization
 feature/menu-dishes-management
+feature/ecf-evaluation-corrections
 ```
 
 Les fichiers de secrets, `vendor/`, `.vscode/` et les fichiers temporaires sont
@@ -85,6 +86,7 @@ Une tâche est terminée lorsque :
 | Statique | `php -l`, `node --check` | syntaxe |
 | Architecture | `tests/mvc_architecture.php` | classes, vues et routage |
 | Domaine | `tests/domain_rules.php` | prix, transitions et URL |
+| Sécurité | `tests/security_accessibility.php` | CSRF et noms accessibles |
 | Intégration | `tests/database_integration.php` | transactions, relations, stock, historique |
 | HTTP | PowerShell + Apache local | codes 200/404 et erreurs PHP |
 | Visuel | Playwright | 3 pages en ordinateur et mobile |

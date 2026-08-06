@@ -26,7 +26,8 @@
             <div class="mb-3">
                 <label for="new_password" class="form-label">Nouveau mot de passe</label>
                 <input type="password" id="new_password" name="password"
-                    class="form-control" autocomplete="new-password" required>
+                    class="form-control" autocomplete="new-password"
+                    minlength="10" maxlength="72" required>
             </div>
 
             <div class="mb-3">
@@ -35,12 +36,13 @@
                 </label>
                 <input type="password" id="password_confirmation"
                     name="password_confirmation" class="form-control"
-                    autocomplete="new-password" required>
+                    autocomplete="new-password" minlength="10" maxlength="72"
+                    required>
             </div>
 
             <p class="form-text">
-                Utilisez au moins 10 caractères avec une majuscule, une
-                minuscule, un chiffre et un caractère spécial.
+                Utilisez 10 à 72 caractères avec une majuscule, une minuscule,
+                un chiffre et un caractère spécial.
             </p>
 
             <button type="submit" class="btn btn-primary align-self-start">
