@@ -11,6 +11,7 @@ use App\Models\OrderAnalytics;
 use App\Models\Review;
 use App\Models\User;
 use App\Services\MailService;
+use App\Services\PasswordPolicy;
 use DateTimeImmutable;
 use PDO;
 
@@ -238,11 +239,8 @@ final class AdminController extends Controller
                 $errors[] = 'L’adresse e-mail est invalide.';
             }
 
-            if (!preg_match(
-                '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/',
-                $password
-            )) {
-                $errors[] = 'Le mot de passe doit contenir au moins 10 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
+            if (!PasswordPolicy::isStrong($password)) {
+                $errors[] = PasswordPolicy::errorMessage();
             }
 
             if (!in_array($employeeForm['is_active'], ['0', '1'], true)) {

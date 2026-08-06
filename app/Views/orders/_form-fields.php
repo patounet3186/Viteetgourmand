@@ -44,6 +44,21 @@
             min="<?= (int) $menu['min_people'] ?>" max="1000"
             value="<?= htmlspecialchars($form['people_count']) ?>" required>
     </div>
+
+    <div class="col-md-4">
+        <label for="<?= $orderFormPrefix ?>_distance" class="form-label">
+            Distance depuis Bordeaux (km)
+        </label>
+        <input type="number" id="<?= $orderFormPrefix ?>_distance"
+            name="delivery_distance_km"
+            class="form-control js-order-distance"
+            min="0" max="1000" step="0.1"
+            value="<?= htmlspecialchars($form['delivery_distance_km']) ?>"
+            aria-describedby="<?= $orderFormPrefix ?>_distance_help" required>
+        <div id="<?= $orderFormPrefix ?>_distance_help" class="form-text">
+            Saisissez 0 lorsque la livraison a lieu à Bordeaux.
+        </div>
+    </div>
 </div>
 
 <section class="order-price-summary mt-4"
@@ -82,6 +97,7 @@
     </dl>
     <p class="form-text mb-0">
         La réduction s’applique à partir de cinq personnes au-dessus du minimum.
-        La livraison est offerte à Bordeaux et facturée 5 € ailleurs.
+        La livraison est offerte à Bordeaux. Ailleurs, elle coûte 5 €
+        auxquels s’ajoutent 0,59 € par kilomètre depuis Bordeaux.
     </p>
 </section>

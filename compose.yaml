@@ -1,0 +1,61 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: development
+      APP_URL: http://localhost:8080
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: vite_et_gourmand
+      DB_USER: vite_gourmand
+      DB_PASSWORD: local_development_password
+      MONGODB_URI: mongodb://mongodb:27017
+      MONGODB_DATABASE: vite_et_gourmand
+      MONGODB_REVIEWS_COLLECTION: reviews
+      MONGODB_ANALYTICS_COLLECTION: order_analytics
+      MAIL_FROM: no-reply@vite-et-gourmand.test
+      COMPANY_EMAIL: contact@vite-et-gourmand.test
+      COMPANY_LEGAL_NAME: Vite & Gourmand
+      COMPANY_ADDRESS: Bordeaux, France
+    depends_on:
+      database:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - php database/apply_mongodb_indexes.php && apache2-foreground
+
+  database:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: vite_et_gourmand
+      MARIADB_USER: vite_gourmand
+      MARIADB_PASSWORD: local_development_password
+      MARIADB_ROOT_PASSWORD: local_root_password
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mongodb:
+    image: mongo:8.0
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  mariadb_data:
+  mongodb_data:

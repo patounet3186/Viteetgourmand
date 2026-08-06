@@ -74,6 +74,7 @@
                     name="password"
                     class="form-control"
                     minlength="10"
+                    maxlength="72"
                     autocomplete="new-password"
                     required
                 >

@@ -16,6 +16,58 @@ final class Menu extends Model
         )->fetchAll();
     }
 
+    /**
+     * @param array{
+     *     min_price: float|null,
+     *     max_price: float|null,
+     *     theme: string|null,
+     *     diet: string|null,
+     *     people: int|null
+     * } $filters
+     * @return list<int>
+     */
+    public function filterActiveIds(array $filters): array
+    {
+        $sql = 'SELECT id FROM menus WHERE is_active = 1';
+        $conditions = [];
+        $params = [];
+
+        if ($filters['min_price'] !== null) {
+            $conditions[] = 'base_price >= :min_price';
+            $params['min_price'] = $filters['min_price'];
+        }
+
+        if ($filters['max_price'] !== null) {
+            $conditions[] = 'base_price <= :max_price';
+            $params['max_price'] = $filters['max_price'];
+        }
+
+        if ($filters['theme'] !== null) {
+            $conditions[] = 'theme = :theme';
+            $params['theme'] = $filters['theme'];
+        }
+
+        if ($filters['diet'] !== null) {
+            $conditions[] = 'diet = :diet';
+            $params['diet'] = $filters['diet'];
+        }
+
+        if ($filters['people'] !== null) {
+            $conditions[] = 'min_people <= :people';
+            $params['people'] = $filters['people'];
+        }
+
+        if ($conditions !== []) {
+            $sql .= ' AND ' . implode(' AND ', $conditions);
+        }
+
+        $sql .= ' ORDER BY created_at DESC';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
+    }
+
     public function findActive(int $menuId): ?array
     {
         $stmt = $this->pdo->prepare(

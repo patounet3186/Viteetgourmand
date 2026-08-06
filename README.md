@@ -5,8 +5,8 @@ Développeur Web et Web Mobile. Vite & Gourmand est un traiteur fictif situé à
 Bordeaux qui présente ses menus, prend des commandes et organise leur suivi.
 
 - Dépôt public : <https://github.com/patounet3186/Viteetgourmand>
-- URL de production : **à renseigner après le déploiement**
-- Tableau de gestion de projet : **à renseigner avant le rendu**
+- URL de production : <https://arkflo.alwaysdata.net>
+- Tableau de gestion de projet : <https://github.com/users/patounet3186/projects/4>
 
 ## Fonctionnalités
 
@@ -23,7 +23,8 @@ Bordeaux qui présente ses menus, prend des commandes et organise leur suivi.
 
 - modifier ses informations personnelles ;
 - commander un menu disponible avec coordonnées préremplies ;
-- voir le prix du menu, la remise de 10 %, la livraison et le total en direct ;
+- voir le prix du menu, la remise de 10 %, la livraison calculée selon la
+  distance et le total en direct ;
 - modifier ou annuler une commande tant qu’elle est au statut `nouvelle` ;
 - consulter le détail et l’historique horodaté de chaque commande ;
 - recevoir des notifications lors des changements de statut ;
@@ -55,7 +56,8 @@ Bordeaux qui présente ses menus, prend des commandes et organise leur suivi.
 - Chart.js 4.4.9 local ;
 - MySQL/MariaDB pour les données métier ;
 - MongoDB Atlas pour les avis et les données statistiques ;
-- Apache/XAMPP en local et alwaysdata comme cible d’hébergement.
+- Docker Compose ou Apache/XAMPP en local ;
+- alwaysdata comme cible d’hébergement.
 
 Les licences des bibliothèques front-end sont conservées dans
 `public/vendor/`.
@@ -67,20 +69,54 @@ app/
   Controllers/   validations, autorisations et réponses HTTP
   Core/          contrôleur commun, URL, environnement, erreurs HTTP
   Models/        accès PDO et MongoDB
-  Services/      calcul tarifaire, CSRF et e-mails
+  Services/      règles métier, validations, tarification et e-mails
   Views/         vues PHP et gabarit principal
 config/          connexions locales ignorées par Git
 database/        schéma complet et migration additive
 docs/            livrables de l’ECF
 public/          contrôleur frontal, CSS, JavaScript, images, bibliothèques
 tests/           contrôles d’architecture, domaine et intégration
+Dockerfile       image PHP 8.2, Apache et extension MongoDB
+compose.yaml     application, MariaDB et MongoDB pour le développement
 ```
 
 `public/index.php` est le contrôleur frontal. Il associe la valeur du paramètre
 `page` à une méthode de contrôleur. Les contrôleurs appellent les modèles et
 transmettent uniquement les données nécessaires aux vues.
 
-## Installation locale
+## Installation locale avec Docker
+
+Cette méthode est recommandée : elle fournit les mêmes services sans installer
+PHP, MariaDB ou MongoDB séparément.
+
+Prérequis : Docker Desktop avec Docker Compose.
+
+```bash
+git clone https://github.com/patounet3186/Viteetgourmand.git ECF-2026
+cd ECF-2026
+docker compose up --build
+```
+
+Ouvrir ensuite <http://localhost:8080>.
+
+Au premier démarrage, `database/schema.sql` initialise MariaDB et le script
+`database/apply_mongodb_indexes.php` crée les index MongoDB. Les données sont
+conservées dans deux volumes Docker.
+
+Commandes utiles :
+
+```bash
+docker compose ps
+docker compose logs app
+docker compose exec app composer test
+docker compose down
+```
+
+Pour repartir d’une base vide, arrêter les conteneurs puis supprimer explicitement
+leurs volumes avec `docker compose down -v`. Cette dernière commande efface les
+données locales Docker et ne doit jamais être utilisée sur la production.
+
+## Installation locale avec XAMPP
 
 ### 1. Prérequis
 
@@ -118,9 +154,11 @@ Pour mettre à jour une installation antérieure du projet :
 1. faire une sauvegarde de la base ;
 2. sélectionner la base ;
 3. importer `database/migrations/20260718_complete_ecf.sql` une seule fois.
+4. importer `database/migrations/20260803_delivery_distance.sql` une seule fois.
 
-La migration ajoute les galeries, l’historique des statuts, les notifications,
-les jetons de mot de passe et les horaires sans supprimer les données existantes.
+Les migrations ajoutent les galeries, l’historique des statuts, les
+notifications, les jetons de mot de passe, les horaires et la distance de
+livraison sans supprimer les données existantes.
 
 ### 4. Configurer MongoDB
 
@@ -207,10 +245,19 @@ Tests rapides, sans écriture en base :
 composer test
 ```
 
+Ils vérifient l’architecture MVC, les règles métier, la présence des jetons
+CSRF et les principaux noms accessibles des formulaires et images.
+
 Test d’intégration optionnel sur la base configurée :
 
 ```bash
 composer test:integration
+```
+
+Pour lancer les tests rapides puis l’intégration en une commande :
+
+```bash
+composer test:all
 ```
 
 Ce dernier crée des données marquées `example.test`, vérifie menu, composition,
@@ -254,6 +301,5 @@ node --check public/js/menu-filters.js
 
 Les neuf exports prêts à remettre sont regroupés dans `docs/pdf/`.
 
-Avant le dépôt final, il reste à renseigner les informations externes impossibles
-à déduire du code : URL de production, lien du tableau de projet et identité
-légale définitive de l’éditeur.
+Avant une nouvelle remise, il reste seulement à confirmer l’identité légale
+définitive de l’éditeur dans les variables de production et les mentions légales.

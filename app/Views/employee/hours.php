@@ -36,6 +36,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <?php
+                    $hourFieldLabels = [
+                        'first_open' => 'début de la première plage',
+                        'first_close' => 'fin de la première plage',
+                        'second_open' => 'début de la seconde plage',
+                        'second_close' => 'fin de la seconde plage',
+                    ];
+                    ?>
                     <?php foreach ($hours as $day): ?>
                         <?php $dayNumber = (int) $day['day_of_week']; ?>
                         <tr>
@@ -47,6 +55,9 @@
                                         name="<?= $field ?>[<?= $dayNumber ?>]"
                                         class="form-control form-control-sm hours-input"
                                         value="<?= htmlspecialchars(substr((string) ($day[$field] ?? ''), 0, 5)) ?>"
+                                        aria-label="<?= htmlspecialchars(
+                                            $day['day_label'] . ' - ' . $hourFieldLabels[$field]
+                                        ) ?>"
                                     >
                                 </td>
                             <?php endforeach; ?>

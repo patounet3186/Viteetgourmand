@@ -147,6 +147,9 @@ Pour une base déjà utilisée par une ancienne version :
 ```bash
 mysql -h mysql-COMPTE.alwaysdata.net -u UTILISATEUR -p COMPTE_BASE \
   < database/migrations/20260718_complete_ecf.sql
+
+mysql -h mysql-COMPTE.alwaysdata.net -u UTILISATEUR -p COMPTE_BASE \
+  < database/migrations/20260803_delivery_distance.sql
 ```
 
 Ne pas importer le schéma complet par-dessus une base en production sans

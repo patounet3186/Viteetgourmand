@@ -60,8 +60,8 @@ final class ReviewController extends Controller
                 $errors[] = 'La note doit être comprise entre 1 et 5.';
             }
 
-            if (mb_strlen($comment) < 10) {
-                $errors[] = 'Le commentaire doit contenir au moins 10 caractères.';
+            if (mb_strlen($comment) < 10 || mb_strlen($comment) > 2000) {
+                $errors[] = 'Le commentaire doit contenir entre 10 et 2 000 caractères.';
             }
 
             if (empty($errors)) {

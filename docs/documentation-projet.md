@@ -44,7 +44,7 @@ application unique qui présente son catalogue et suit chaque prestation.
 ### Commandes
 
 - coordonnées client préremplies ;
-- date, heure, adresse, ville et nombre de personnes ;
+- date, heure, adresse, ville, distance depuis Bordeaux et nombre de personnes ;
 - minimum du menu ;
 - remise de 10 % à partir du minimum plus cinq personnes ;
 - frais de livraison distincts ;
@@ -216,11 +216,14 @@ même si un CDN est indisponible.
 - procédure de déploiement ;
 - synthèse de révision.
 
-## Éléments externes à compléter
+## Liens de livraison
 
-Avant remise :
+Les éléments externes associés au projet sont :
 
-1. URL de l’application déployée ;
-2. lien du tableau de suivi ;
-3. identité légale finale de l’éditeur ;
-4. captures ou preuve de recette de production.
+1. application : <https://arkflo.alwaysdata.net> ;
+2. dépôt : <https://github.com/patounet3186/Viteetgourmand> ;
+3. tableau de suivi : <https://github.com/users/patounet3186/projects/4> ;
+4. captures de recette : `docs/maquettes/`.
+
+L’identité légale définitive de l’éditeur reste à confirmer dans la
+configuration de production et les mentions légales.

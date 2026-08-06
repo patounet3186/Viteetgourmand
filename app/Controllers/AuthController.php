@@ -11,6 +11,8 @@ use App\Models\PasswordResetToken;
 use App\Models\Review;
 use App\Models\User;
 use App\Services\MailService;
+use App\Services\PasswordPolicy;
+use App\Services\UserRegistrationService;
 use PDO;
 
 final class AuthController extends Controller
@@ -19,6 +21,7 @@ final class AuthController extends Controller
     private Order $orders;
     private PasswordResetToken $resetTokens;
     private MailService $mailer;
+    private UserRegistrationService $registration;
 
     public function __construct(PDO $pdo)
     {
@@ -27,6 +30,7 @@ final class AuthController extends Controller
         $this->orders = new Order($pdo);
         $this->resetTokens = new PasswordResetToken($pdo);
         $this->mailer = new MailService();
+        $this->registration = new UserRegistrationService($this->users, $this->mailer);
     }
 
     public function register(): array
@@ -63,67 +67,15 @@ final class AuthController extends Controller
                 $errors[] = 'Le formulaire a expiré, merci de réessayer.';
             }
 
-            if (
-                $form['first_name'] === ''
-                || $form['last_name'] === ''
-                || $form['email'] === ''
-                || $password === ''
-            ) {
-                $errors[] = 'Les champs obligatoires doivent être remplis.';
+            if ($errors === []) {
+                $errors = $this->registration->register(
+                    $form,
+                    $password,
+                    $termsAccepted
+                );
             }
 
-            if (!filter_var($form['email'], FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'Adresse email invalide.';
-            }
-
-            if (
-                mb_strlen($form['first_name']) < 2
-                || mb_strlen($form['first_name']) > 100
-                || mb_strlen($form['last_name']) < 2
-                || mb_strlen($form['last_name']) > 100
-            ) {
-                $errors[] = 'Le prénom et le nom doivent contenir entre 2 et 100 caractères.';
-            }
-
-            if (mb_strlen($form['email']) > 180) {
-                $errors[] = 'L’adresse e-mail est trop longue.';
-            }
-
-            if (
-                $form['phone'] !== ''
-                && (
-                    mb_strlen($form['phone']) > 30
-                    || preg_match('/^[0-9+().\s-]+$/', $form['phone']) !== 1
-                )
-            ) {
-                $errors[] = 'Le numéro de téléphone est invalide.';
-            }
-
-            if (
-                mb_strlen($form['address']) > 255
-                || mb_strlen($form['postal_code']) > 20
-                || mb_strlen($form['city']) > 100
-            ) {
-                $errors[] = 'Une information d’adresse est trop longue.';
-            }
-
-            if (!$this->strongPassword($password)) {
-                $errors[] = 'Le mot de passe doit contenir 10 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
-            }
-
-            if (!$termsAccepted) {
-                $errors[] = 'Vous devez accepter les conditions générales et la politique de confidentialité.';
-            }
-
-            if (empty($errors) && $this->users->emailExists($form['email'])) {
-                $errors[] = 'Un compte existe déjà avec cet email.';
-            }
-
-            if (empty($errors)) {
-                $this->users->createCustomer([
-                    ...$form,
-                    'password_hash' => password_hash($password, PASSWORD_DEFAULT),
-                ]);
+            if ($errors === []) {
                 $this->redirect('register', ['created' => 1]);
             }
         }
@@ -259,8 +211,8 @@ final class AuthController extends Controller
                 $errors[] = 'Le formulaire a expiré, merci de réessayer.';
             }
 
-            if (!$this->strongPassword($password)) {
-                $errors[] = 'Le mot de passe doit contenir 10 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
+            if (!PasswordPolicy::isStrong($password)) {
+                $errors[] = PasswordPolicy::errorMessage();
             }
 
             if ($password !== $confirmation) {
@@ -421,14 +373,6 @@ final class AuthController extends Controller
         session_unset();
         session_destroy();
         $this->redirect('home');
-    }
-
-    private function strongPassword(string $password): bool
-    {
-        return preg_match(
-            '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/',
-            $password
-        ) === 1;
     }
 
     private function loginIsBlocked(): bool

@@ -2,12 +2,18 @@
 
 declare(strict_types=1);
 
+use App\Models\Dish;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Services\DishManagementService;
 use App\Services\OrderPricing;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once dirname(__DIR__) . '/config/database.php';
+
+$testDatabaseDsn = getenv('TEST_DATABASE_DSN');
+if (!is_string($testDatabaseDsn) || $testDatabaseDsn === '') {
+    require_once dirname(__DIR__) . '/config/database.php';
+}
 
 function verify(bool $condition, string $message): void
 {
@@ -25,12 +31,24 @@ function cleanStaleIntegrationData(\PDO $pdo): void
          WHERE users.email LIKE '%@example.test'"
     );
     $pdo->exec("DELETE FROM menus WHERE title LIKE 'Menu test %'");
+    $pdo->exec("DELETE FROM dishes WHERE name LIKE 'Plat test %'");
     $pdo->exec("DELETE FROM users WHERE email LIKE '%@example.test'");
 }
 
-$pdo = getDatabase();
+$pdo = is_string($testDatabaseDsn) && $testDatabaseDsn !== ''
+    ? new PDO(
+        $testDatabaseDsn,
+        (string) (getenv('TEST_DATABASE_USER') ?: ''),
+        (string) (getenv('TEST_DATABASE_PASSWORD') ?: ''),
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    )
+    : getDatabase();
 $menuId = null;
 $orderId = null;
+$dishIds = [];
 $userIds = [];
 $token = bin2hex(random_bytes(6));
 $exitCode = 0;
@@ -56,21 +74,20 @@ try {
         $userIds[$role] = (int) $pdo->lastInsertId();
     }
 
-    $dishRows = $pdo->query(
-        "SELECT id, category
-         FROM dishes
-         WHERE category IN ('entree', 'plat', 'dessert')
-         ORDER BY id"
-    )->fetchAll(PDO::FETCH_ASSOC);
-    $dishIdsByCategory = [];
-
-    foreach ($dishRows as $dish) {
-        $dishIdsByCategory[$dish['category']] ??= (int) $dish['id'];
+    $dishModel = new Dish($pdo);
+    foreach (['entree', 'plat', 'dessert'] as $category) {
+        $dishModel->create([
+            'name' => "Plat test {$category} {$token}",
+            'category' => $category,
+            'description' => "Description temporaire du {$category} de test.",
+            'allergens' => '',
+        ]);
+        $dishIds[] = (int) $pdo->lastInsertId();
     }
 
     verify(
-        count($dishIdsByCategory) === 3,
-        'La base doit contenir au moins une entrée, un plat et un dessert.'
+        count($dishIds) === 3,
+        'Les trois plats temporaires n’ont pas été créés.'
     );
 
     $menuModel = new Menu($pdo);
@@ -86,7 +103,6 @@ try {
         'image_url' => 'images/menu-classique.webp',
         'is_active' => 1,
     ];
-    $dishIds = array_values($dishIdsByCategory);
     $imageUrls = [
         'images/menu-classique.webp',
         'images/menu-noel.webp',
@@ -96,6 +112,17 @@ try {
     verify($menuModel->dishIds($menuId) === $dishIds, 'Composition du menu incorrecte.');
     verify($menuModel->imageUrls($menuId) === $imageUrls, 'Galerie du menu incorrecte.');
 
+    $dishManagement = new DishManagementService($dishModel);
+    try {
+        $dishManagement->delete($dishIds[0]);
+        throw new RuntimeException('Un plat utilisé par un menu a été supprimé.');
+    } catch (DomainException) {
+        verify(
+            $dishModel->find($dishIds[0]) !== null,
+            'Le plat protégé doit rester enregistré.'
+        );
+    }
+
     $menuData['title'] = "Menu test modifié {$token}";
     $menuModel->update($menuId, $menuData, $dishIds, $imageUrls);
     verify(
@@ -103,9 +130,9 @@ try {
         'La modification du menu n’a pas été enregistrée.'
     );
 
-    $pricing = OrderPricing::calculate($menuData, 9, 'Mérignac');
+    $pricing = OrderPricing::calculate($menuData, 9, 'Mérignac', 8.0);
     verify($pricing['discount_amount'] > 0, 'La remise de 10 % devait être appliquée.');
-    verify($pricing['delivery_price'] === 5.0, 'Les frais de livraison attendus sont de 5 €.');
+    verify($pricing['delivery_price'] === 9.72, 'Les frais de livraison incluent la distance.');
 
     $orderModel = new Order($pdo);
     $orderId = $orderModel->create([
@@ -115,6 +142,7 @@ try {
         'event_time' => '12:30:00',
         'delivery_address' => '1 rue du Test',
         'delivery_city' => 'Mérignac',
+        'delivery_distance_km' => 8.0,
         'people_count' => 9,
         ...$pricing,
     ]);
@@ -125,7 +153,7 @@ try {
     verify($stockAfterOrder === 2, 'Le stock devait diminuer après la commande.');
     verify(count($orderModel->history($orderId)) === 1, 'Le statut initial est absent.');
 
-    $pricingAfterEdit = OrderPricing::calculate($menuData, 10, 'Bordeaux');
+    $pricingAfterEdit = OrderPricing::calculate($menuData, 10, 'Bordeaux', 0.0);
     $updated = $orderModel->updateByUser(
         $orderId,
         $userIds['user'],
@@ -134,6 +162,7 @@ try {
             'event_time' => '13:00:00',
             'delivery_address' => '2 rue du Test',
             'delivery_city' => 'Bordeaux',
+            'delivery_distance_km' => 0.0,
             'people_count' => 10,
             ...$pricingAfterEdit,
         ]
@@ -197,6 +226,12 @@ try {
     if ($menuId !== null) {
         $deleteMenu = $pdo->prepare('DELETE FROM menus WHERE id = :id');
         $deleteMenu->execute(['id' => $menuId]);
+    }
+
+    if ($dishIds !== []) {
+        $placeholders = implode(',', array_fill(0, count($dishIds), '?'));
+        $deleteDishes = $pdo->prepare("DELETE FROM dishes WHERE id IN ({$placeholders})");
+        $deleteDishes->execute($dishIds);
     }
 
     if ($userIds !== []) {

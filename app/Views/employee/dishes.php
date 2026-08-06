@@ -16,7 +16,7 @@
 
 <?php if ($dishDeleted): ?>
   <div class="alert alert-success js-auto-hide" role="status">
-    Le plat a bien été supprimé des menus.
+    Le plat a bien été supprimé.
   </div>
 <?php endif; ?>
 
@@ -140,15 +140,26 @@
                   >
                     Modifier
                   </a>
-                  <form method="post" class="d-inline js-confirm-form"
-                    data-confirm="Supprimer ce plat et le retirer de tous les menus ?">
-                    <input type="hidden" name="action" value="delete_dish">
-                    <input type="hidden" name="dish_id" value="<?= (int) $dish['id'] ?>">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <?php if ((int) $dish['menus_count'] === 0): ?>
+                    <form method="post" class="d-inline js-confirm-form"
+                      data-confirm="Supprimer définitivement ce plat ?">
+                      <input type="hidden" name="action" value="delete_dish">
+                      <input type="hidden" name="dish_id" value="<?= (int) $dish['id'] ?>">
+                      <?= csrf_field() ?>
+                      <button type="submit" class="btn btn-sm btn-outline-danger">
+                        Supprimer
+                      </button>
+                    </form>
+                  <?php else: ?>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      title="Retirez d’abord ce plat de tous les menus"
+                      disabled
+                    >
                       Supprimer
                     </button>
-                  </form>
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>

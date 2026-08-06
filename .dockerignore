@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.vscode
+.env
+config/database.php
+config/mongodb.php
+docs/word-work
+docs/*.docx
+node_modules
+tmp
+vendor
+*.log

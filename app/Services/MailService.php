@@ -66,6 +66,17 @@ final class MailService
         return $this->send($email, 'Confirmation de votre commande', $message);
     }
 
+    public function customerWelcome(string $email, string $firstName): bool
+    {
+        $message = "Bonjour {$firstName},\n\n"
+            . "Votre compte Vite & Gourmand a bien été créé.\n"
+            . "Vous pouvez maintenant consulter les menus, passer une commande "
+            . "et suivre son avancement depuis votre espace client.\n\n"
+            . "Vite & Gourmand";
+
+        return $this->send($email, 'Bienvenue chez Vite & Gourmand', $message);
+    }
+
     public function orderStatus(
         string $email,
         string $firstName,
